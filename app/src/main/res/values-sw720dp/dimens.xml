@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="large_num_columns">4</integer>
+    <dimen name="layout_margin">58dp</dimen>
+    <dimen name="s_layout_margin">48dip</dimen>
+    <dimen name="desc_text_size">20sp</dimen>
+    <dimen name="title_text_size">24sp</dimen>
+    <dimen name="padding_normal">20dp</dimen>
+    <integer name="num_columns">1</integer>
+    <integer name="small_num_columns">1</integer>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="app_bar_height">550dp</dimen>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/app_bar_height"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_normal">
+
+        <com.fastaccess.tfl.ui.widget.ForegroundImageView
+            android:layout_width="82dp"
+            android:layout_height="82dp"
+            android:paddingBottom="@dimen/spacing_sLarge"
+            android:src="@mipmap/ic_launcher"/>
+
+        <com.fastaccess.tfl.ui.widget.FontTextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/desc_text_left_margin"
+            android:layout_marginStart="@dimen/desc_text_left_margin"
+            android:paddingBottom="@dimen/spacing_micro"
+            android:text="Welcome To:"
+            android:textColor="@color/white"
+            android:textSize="@dimen/desc_text_size"
+            android:textStyle="bold"/>
+
+        <com.fastaccess.tfl.ui.widget.FontTextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/keyline_1"
+            android:layout_marginStart="@dimen/keyline_1"
+            android:text="The Flash Launcher"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title_text_size"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?colorAccent"/>
+</LinearLayout>

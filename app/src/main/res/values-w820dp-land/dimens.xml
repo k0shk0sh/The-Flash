@@ -1,0 +1,9 @@
+<resources>
+    <integer name="large_num_columns">5</integer>
+    <dimen name="layout_margin">84dp</dimen>
+    <dimen name="s_layout_margin">74dip</dimen>
+    <dimen name="padding_normal">42dp</dimen>
+    <integer name="num_columns">3</integer>
+    <integer name="small_num_columns">3</integer>
+    <dimen name="app_bar_height">200dp</dimen>
+</resources>

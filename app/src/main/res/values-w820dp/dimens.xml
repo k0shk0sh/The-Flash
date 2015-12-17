@@ -1,0 +1,12 @@
+<resources>
+    <integer name="large_num_columns">4</integer>
+    <dimen name="layout_margin">64dp</dimen>
+    <dimen name="s_layout_margin">54dip</dimen>
+    <dimen name="desc_text_size">22sp</dimen>
+    <dimen name="title_text_size">26sp</dimen>
+    <dimen name="padding_normal">22dp</dimen>
+    <integer name="num_columns">2</integer>
+    <integer name="small_num_columns">2</integer>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="app_bar_height">450dp</dimen>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="large_num_columns">4</integer>
+    <dimen name="layout_margin">82dp</dimen>
+    <dimen name="s_layout_margin">72dip</dimen>
+    <integer name="num_columns">2</integer>
+    <integer name="small_num_columns">2</integer>
+    <dimen name="app_bar_height">500dp</dimen>
+</resources>

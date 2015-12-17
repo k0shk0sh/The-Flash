@@ -1,0 +1,22 @@
+<resources>
+    <dimen name="layout_margin">16dp</dimen>
+    <dimen name="s_layout_margin">12dip</dimen>
+    <dimen name="desc_text_size">16sp</dimen>
+    <dimen name="desc_text_left_margin">12dp</dimen>
+    <dimen name="title_text_size">20sp</dimen>
+    <dimen name="spacing_normal">8dp</dimen>
+    <dimen name="spacing_sLarge">16dp</dimen>
+    <dimen name="spacing_micro">4dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="spacing_large">32dp</dimen>
+    <dimen name="spacing_xlarge">48dp</dimen>
+    <dimen name="spacing_huge">64dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="keyline_1">72dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <integer name="num_columns">1</integer>
+    <integer name="large_num_columns">4</integer>
+    <integer name="small_num_columns">1</integer>
+    <dimen name="app_bar_height">200dp</dimen>
+</resources>
+
