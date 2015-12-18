@@ -94,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
+        if (appsDrawer.isShown()) {
+            AnimUtil.circularRevealFromBottom(appsDrawer, false);
+        }
     }
 
     @Override protected void onDestroy() {

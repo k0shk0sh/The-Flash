@@ -3,7 +3,9 @@ package com.fastaccess.tfl;
 
 import com.activeandroid.app.Application;
 import com.fastaccess.tfl.apps.IconCache;
+import com.fastaccess.tfl.helper.PrefHelper;
 import com.fastaccess.tfl.helper.TypeFaceHelper;
+import com.fastaccess.tfl.ui.wallpaper.Utilities;
 
 /**
  * Created by Kosh on 17/12/15 6:55 PM
@@ -16,9 +18,11 @@ public class AppController extends Application {
         super.onCreate();
         app = this;
         TypeFaceHelper.generateTypeface(this);
+        PrefHelper.init(this);
+        Utilities.initStatics(this);
     }
 
-    public synchronized static AppController getApp() {
+    public static AppController getApp() {
         return app;
     }
 

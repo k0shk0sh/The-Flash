@@ -38,8 +38,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -48,25 +51,22 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import com.fastaccess.tfl.R;
+import com.fastaccess.tfl.apps.IconCache;
+import com.fastaccess.tfl.ui.widget.FastBitmapDrawable;
+
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
 public final class Utilities {
-
-    private static final String TAG = "Launcher.Utilities";
+    private static int sIconWidth = -1;
+    private static int sIconHeight = -1;
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
-
-    private static final Pattern sTrimPattern =
-            Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -76,22 +76,75 @@ public final class Utilities {
     static int sColors[] = {0xffff0000, 0xff00ff00, 0xff0000ff};
     static int sColorIndex = 0;
 
-    private static final int[] sLoc0 = new int[2];
-    private static final int[] sLoc1 = new int[2];
-
-    public static final boolean ATLEAST_MARSHMALLOW = Build.VERSION.SDK_INT >= 23;
+    static int[] sLoc0 = new int[2];
+    static int[] sLoc1 = new int[2];
 
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
-    private static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
-    private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
+    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
+    public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
-    public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
+    static Bitmap createIconBitmap(Drawable icon, Context context, int count) {
+        Bitmap b = createIconBitmap(icon, context);
+        int textureWidth = b.getWidth();
+        final Resources resources = context.getResources();
+        final Canvas canvas = sCanvas;
+        canvas.setBitmap(b);
+
+        float textsize = resources.getDimension(R.dimen.infomation_count_textsize);
+        Paint countPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);
+        countPaint.setColor(Color.WHITE);
+        countPaint.setTextSize(textsize);
+
+        String text = String.valueOf(count);
+        if (count >= 1000) {
+            text = "999+";
+        }
+
+        float count_hight = resources.getDimension(R.dimen.infomation_count_height);
+        float padding = resources.getDimension(R.dimen.infomation_count_padding);
+        float radius = resources.getDimension(R.dimen.infomation_count_circle_radius);
+        int textwidth = (int) (countPaint.measureText(text) + 1);
+        float width = textwidth + padding * 2;
+        width = Math.max(width, resources.getDimensionPixelSize(R.dimen.infomation_count_min_width));
+
+        RectF rect = new RectF(textureWidth - width - 1, 1, textureWidth - 1, count_hight + 1);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(resources.getColor(R.color.infomation_count_circle_color));
+        canvas.drawRoundRect(rect, radius, radius, paint);
+
+        float x = textureWidth - (width + textwidth) / 2 - 1;
+        float y = textsize;
+        canvas.drawText(text, x, y, countPaint);
+
+        return b;
+    }
+
+    /**
+     * Returns a FastBitmapDrawable with the icon, accurately sized.
+     */
+    public static FastBitmapDrawable createIconDrawable(Bitmap icon) {
+        FastBitmapDrawable d = new FastBitmapDrawable(icon);
+        d.setFilterBitmap(true);
+        resizeIconDrawable(d);
+        return d;
+    }
+
+    /**
+     * Resizes an icon drawable to the correct icon size.
+     */
+    static void resizeIconDrawable(Drawable icon) {
+        icon.setBounds(0, 0, sIconWidth, sIconHeight);
+    }
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
+    public static boolean isRotationEnabled(Context c) {
+        return true;
+    }
 
     /**
      * Indicates if the device is running LMP or higher.
@@ -100,14 +153,108 @@ public final class Utilities {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static boolean isLmpMR1OrAbove() {
-        return Build.VERSION.SDK_INT >= 22;
+    /**
+     * Returns a bitmap suitable for the all apps view. If the package or the resource do not exist, it returns null.
+     */
+    static Bitmap createIconBitmap(String packageName, String resourceName, IconCache cache, Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        // the resource
+        try {
+            Resources resources = packageManager.getResourcesForApplication(packageName);
+            if (resources != null) {
+                final int id = resources.getIdentifier(resourceName, null, null);
+                return createIconBitmap(
+                        resources.getDrawableForDensity(id, cache.getFullResIconDpi()), context);
+            }
+        } catch (Exception e) {
+            // Icon not found.
+        }
+        return null;
     }
 
-    public static boolean isLmpMR1() {
-        return Build.VERSION.SDK_INT == 22;
+    /**
+     * Returns a bitmap which is of the appropriate size to be displayed as an icon
+     */
+    static Bitmap createIconBitmap(Bitmap icon, Context context) {
+        synchronized (sCanvas) { // we share the statics :-(
+            if (sIconWidth == -1) {
+                initStatics(context);
+            }
+        }
+        if (sIconWidth == icon.getWidth() && sIconHeight == icon.getHeight()) {
+            return icon;
+        }
+        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context);
     }
 
+    /**
+     * Returns a bitmap suitable for the all apps view.
+     */
+    public static Bitmap createIconBitmap(Drawable icon, Context context) {
+        synchronized (sCanvas) { // we share the statics :-(
+            if (sIconWidth == -1) {
+                initStatics(context);
+            }
+
+            int width = sIconWidth;
+            int height = sIconHeight;
+
+            if (icon instanceof PaintDrawable) {
+                PaintDrawable painter = (PaintDrawable) icon;
+                painter.setIntrinsicWidth(width);
+                painter.setIntrinsicHeight(height);
+            } else if (icon instanceof BitmapDrawable) {
+                // Ensure the bitmap has a density.
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+                if (bitmap.getDensity() == Bitmap.DENSITY_NONE) {
+                    bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
+                }
+            }
+            int sourceWidth = icon.getIntrinsicWidth();
+            int sourceHeight = icon.getIntrinsicHeight();
+            if (sourceWidth > 0 && sourceHeight > 0) {
+                // Scale the icon proportionally to the icon dimensions
+                final float ratio = (float) sourceWidth / sourceHeight;
+                if (sourceWidth > sourceHeight) {
+                    height = (int) (width / ratio);
+                } else if (sourceHeight > sourceWidth) {
+                    width = (int) (height * ratio);
+                }
+            }
+
+            // no intrinsic size --> use default size
+            int textureWidth = sIconWidth;
+            int textureHeight = sIconHeight;
+
+            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+                    Bitmap.Config.ARGB_8888);
+            final Canvas canvas = sCanvas;
+            canvas.setBitmap(bitmap);
+
+            final int left = (textureWidth - width) / 2;
+            final int top = (textureHeight - height) / 2;
+
+            @SuppressWarnings("all") // suppress dead code warning
+            final boolean debug = false;
+            if (debug) {
+                // draw a big box for the icon for debugging
+                canvas.drawColor(sColors[sColorIndex]);
+                if (++sColorIndex >= sColors.length) sColorIndex = 0;
+                Paint debugPaint = new Paint();
+                debugPaint.setColor(0xffcccc00);
+                canvas.drawRect(left, top, left + width, top + height, debugPaint);
+            }
+
+            sOldBounds.set(icon.getBounds());
+            icon.setBounds(left, top, left + width, top + height);
+            icon.draw(canvas);
+            icon.setBounds(sOldBounds);
+            canvas.setBitmap(null);
+
+            return bitmap;
+        }
+    }
 
     /**
      * Given a coordinate relative to the descendant, find the coordinate in a parent view's coordinates.
@@ -207,6 +354,15 @@ public final class Utilities {
                 localY < (v.getHeight() + slop);
     }
 
+    public static void initStatics(Context context) {
+        final Resources resources = context.getResources();
+        sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
+    }
+
+    public static void setIconSize(int widthPx) {
+        sIconWidth = sIconHeight = widthPx;
+    }
+
     public static void scaleRect(Rect r, float scale) {
         if (scale != 1.0f) {
             r.left = (int) (r.left * scale + 0.5f);
@@ -247,12 +403,9 @@ public final class Utilities {
         try {
             activity.startActivityForResult(intent, requestCode);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(activity, "Activity Not Found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "No App Found", Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {
-            Toast.makeText(activity, "Activity Not Found", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
-                    ". Make sure to create a MAIN intent-filter for the corresponding activity " +
-                    "or use the exported attribute for this activity.", e);
+            Toast.makeText(activity, "No App found", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -378,21 +531,49 @@ public final class Utilities {
                     final Resources res = pm.getResourcesForApplication(packageName);
                     return Pair.create(packageName, res);
                 } catch (NameNotFoundException e) {
-                    Log.w(TAG, "Failed to find resources for " + packageName);
+                    Log.w("TAG", "Failed to find resources for " + packageName);
                 }
             }
         }
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static boolean isViewAttachedToWindow(View v) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return v.isAttachedToWindow();
-        } else {
-            // A proxy call which returns null, if the view is not attached to the window.
-            return v.getKeyDispatcherState() != null;
+    /*
+     * Finds all system apks which had a broadcast receiver listening to a particular action.
+     * @param action intent action used to find the apk
+     * @return a list of pairs of apk package name and the resources.
+     */
+    static List<Pair<String, Resources>> findSystemApks(String action, PackageManager pm) {
+        final Intent intent = new Intent(action);
+        List<Pair<String, Resources>> systemApks = new ArrayList<Pair<String, Resources>>();
+        for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
+            if (info.activityInfo != null &&
+                    (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                final String packageName = info.activityInfo.packageName;
+                try {
+                    final Resources res = pm.getResourcesForApplication(packageName);
+                    systemApks.add(Pair.create(packageName, res));
+                } catch (NameNotFoundException e) {
+                    Log.w("TAG", "Failed to find resources for " + packageName);
+                }
+            }
         }
+        return systemApks;
+    }
+
+    public static float convertDpToPixel(float dp, Context context) {
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / (float) DisplayMetrics.DENSITY_DEFAULT);
+        return px;
+    }
+
+    public static boolean searchActivityExists(Context context) {
+        SearchManager searchManager =
+                (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
+        ComponentName activityName = searchManager.getGlobalSearchActivity();
+
+        return activityName != null;
     }
 
     /**
@@ -426,109 +607,21 @@ public final class Utilities {
         return defaultWidgetForSearchPackage;
     }
 
-    /**
-     * Compresses the bitmap to a byte array for serialization.
-     */
-    public static byte[] flattenBitmap(Bitmap bitmap) {
-        // Try go guesstimate how much space the icon will take when serialized
-        // to avoid unnecessary allocations/copies during the write.
-        int size = bitmap.getWidth() * bitmap.getHeight() * 4;
-        ByteArrayOutputStream out = new ByteArrayOutputStream(size);
-        try {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-            return out.toByteArray();
-        } catch (IOException e) {
-            Log.w(TAG, "Could not write bitmap");
-            return null;
-        }
-    }
-
-    /**
-     * Find the first vacant cell, if there is one.
-     *
-     * @param vacant
-     *         Holds the x and y coordinate of the vacant cell
-     * @param spanX
-     *         Horizontal cell span.
-     * @param spanY
-     *         Vertical cell span.
-     * @return true if a vacant cell was found
-     */
-    public static boolean findVacantCell(int[] vacant, int spanX, int spanY,
-                                         int xCount, int yCount, boolean[][] occupied) {
-
-        for (int y = 0; (y + spanY) <= yCount; y++) {
-            for (int x = 0; (x + spanX) <= xCount; x++) {
-                boolean available = !occupied[x][y];
-                out:
-                for (int i = x; i < x + spanX; i++) {
-                    for (int j = y; j < y + spanY; j++) {
-                        available = available && !occupied[i][j];
-                        if (!available) break out;
-                    }
-                }
-
-                if (available) {
-                    vacant[0] = x;
-                    vacant[1] = y;
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Trims the string, removing all whitespace at the beginning and end of the string. Non-breaking whitespaces are also removed.
-     */
-    public static String trim(CharSequence s) {
-        if (s == null) {
-            return null;
-        }
-
-        // Just strip any sequence of whitespace or java space characters from the beginning and end
-        Matcher m = sTrimPattern.matcher(s);
-        return m.replaceAll("$1");
-    }
-
-    /**
-     * Calculates the height of a given string at a specific text size.
-     */
-    public static float calculateTextHeight(float textSizePx) {
-        Paint p = new Paint();
-        p.setTextSize(textSizePx);
-        Paint.FontMetrics fm = p.getFontMetrics();
-        return -fm.top + fm.bottom;
-    }
-
-    /**
-     * Convenience println with multiple args.
-     */
-    public static void println(String key, Object... args) {
-        StringBuilder b = new StringBuilder();
-        b.append(key);
-        b.append(": ");
-        boolean isFirstArgument = true;
-        for (Object arg : args) {
-            if (isFirstArgument) {
-                isFirstArgument = false;
-            } else {
-                b.append(", ");
-            }
-            b.append(arg);
-        }
-        System.out.println(b.toString());
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isRtl(Resources res) {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) &&
                 (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
     }
 
+    public static boolean isPackageInstalled(Context context, String pkg) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo pi = packageManager.getPackageInfo(pkg, 0);
+            return pi.applicationInfo.enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
 
     public static float dpiFromPx(int size, DisplayMetrics metrics) {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
@@ -543,9 +636,5 @@ public final class Utilities {
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
-    }
-
-    public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
-        return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 }

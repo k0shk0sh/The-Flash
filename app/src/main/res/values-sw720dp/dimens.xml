@@ -10,4 +10,5 @@
     <integer name="small_num_columns">1</integer>
     <dimen name="fab_margin">24dp</dimen>
     <dimen name="app_bar_height">550dp</dimen>
+    <dimen name="app_icon_size">72dp</dimen>
 </resources>

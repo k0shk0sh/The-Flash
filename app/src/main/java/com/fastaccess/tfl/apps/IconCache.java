@@ -92,6 +92,10 @@ public class IconCache {
 
     }
 
+    public int getFullResIconDpi() {
+        return mIconDpi;
+    }
+
     private void loadIconPack() {
         mIconPackHelper.unloadIconPack();
         String iconPack = "";

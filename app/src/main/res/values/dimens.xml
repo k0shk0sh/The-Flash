@@ -18,5 +18,11 @@
     <integer name="large_num_columns">4</integer>
     <integer name="small_num_columns">1</integer>
     <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="infomation_count_height">14dp</dimen>
+    <dimen name="infomation_count_min_width">14dp</dimen>
+    <dimen name="infomation_count_textsize">11dp</dimen>
+    <dimen name="infomation_count_padding">4dp</dimen>
+    <dimen name="infomation_count_circle_radius">7dp</dimen>
+    <dimen name="app_icon_size">48dp</dimen>
 </resources>
 

@@ -6,10 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
 
 import com.fastaccess.tfl.R;
-import com.fastaccess.tfl.ui.widget.FontTextView;
+import com.fastaccess.tfl.ui.widget.BubbleTextView;
 import com.fastaccess.tfl.ui.widget.VHolder;
 
 import java.util.ArrayList;
@@ -41,8 +40,7 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
 
     @Override public void onBindViewHolder(VHolder holder, int position) {
         final AppsHolder h = (AppsHolder) holder;
-        h.appName.setText(modelList.get(position).getAppName());
-        h.icon.setImageBitmap(modelList.get(position).getBitmap());
+        h.appName.applyFromApplicationInfo(modelList.get(position));
         h.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 onAppClick.onAppClick(modelList.get(h.getAdapterPosition()));
@@ -69,8 +67,7 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
     }
 
     static class AppsHolder extends VHolder {
-        @Bind(R.id.icon) ImageView icon;
-        @Bind(R.id.appName) FontTextView appName;
+        @Bind(R.id.appName) BubbleTextView appName;
 
         public AppsHolder(View itemView) {
             super(itemView);
