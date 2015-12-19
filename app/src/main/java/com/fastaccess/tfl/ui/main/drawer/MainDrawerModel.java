@@ -19,4 +19,6 @@ public interface MainDrawerModel {
     void onReset();
 
     void onAppRemoved(int position);
+
+    void closeDrawer();
 }

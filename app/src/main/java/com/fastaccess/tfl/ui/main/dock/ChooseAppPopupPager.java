@@ -50,7 +50,7 @@ public class ChooseAppPopupPager extends DialogFragment {
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AnimUtil.circularRevealFromBottom(null, reveal, true);
+        AnimUtil.circularRevealFromBottom(reveal, true);
         toolbar.setNavigationIcon(R.drawable.ic_back_white);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {

@@ -27,6 +27,7 @@ import com.fastaccess.tfl.helper.AnimUtil;
 import com.fastaccess.tfl.helper.AppHelper;
 import com.fastaccess.tfl.helper.GestureHelper;
 import com.fastaccess.tfl.helper.Logger;
+import com.fastaccess.tfl.ui.main.dock.ChooseAppPopupPager;
 import com.fastaccess.tfl.ui.main.dock.MainDockModel;
 import com.fastaccess.tfl.ui.main.drawer.MainDrawerModel;
 import com.fastaccess.tfl.ui.main.drawer.MainDrawerPresenter;
@@ -35,6 +36,8 @@ import com.fastaccess.tfl.ui.wallpaper.WallpaperPickerActivity;
 import com.fastaccess.tfl.ui.widget.DynamicRecyclerView;
 import com.fastaccess.tfl.ui.widget.FontEditTextView;
 import com.fastaccess.tfl.ui.widget.ForegroundImageView;
+import com.fastaccess.tfl.ui.widget.drag.DragLayer;
+import com.fastaccess.tfl.ui.widget.drag.DropSpot;
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
 import java.util.List;
@@ -57,10 +60,13 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     @Bind(R.id.searchHolder) View searchHolder;
     @Bind(R.id.navigationView) NavigationView navigationView;
     @Bind(R.id.toggleMenu) ForegroundImageView toggleMenu;
+    @Bind(R.id.openDrawer) View openDrawer;
     @Bind(R.id.recyclerView) DynamicRecyclerView recyclerView;
     @Bind(R.id.appsDrawer) View appsDrawer;
     @Bind(R.id.footer) View footer;
     @Bind(R.id.progress) CircularFillableLoaders progress;
+    @Bind(R.id.dropSpot) DropSpot dropSpot;
+    @Bind(R.id.mainLayout) DragLayer mainLayout;
     private AppsAdapter adapter;
     private MainDrawerPresenter presenter;
     private final static String POPUP = "popup";
@@ -71,12 +77,7 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     }
 
     @OnClick(R.id.openDrawer) void onOpenAppDrawer() {
-//        ChooseAppPopupPager popup = (ChooseAppPopupPager) getSupportFragmentManager().findFragmentByTag(POPUP);
-//        if (popup == null) {
-//            popup = new ChooseAppPopupPager();
-//        }
-//        popup.show(getSupportFragmentManager(), POPUP);
-        AnimUtil.circularRevealFromBottom(appsDrawer, appsDrawer.getVisibility() == View.INVISIBLE);
+        AnimUtil.circularRevealFromBottom(appsDrawer, openDrawer, appsDrawer.getVisibility() == View.INVISIBLE);
     }
 
     @OnClick(R.id.toggleMenu) void onMenu() {
@@ -121,12 +122,17 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        MainDrawerPresenter presenter = getPresenter();
         drawerLayout.setStatusBarBackground(new ColorDrawable(Color.TRANSPARENT));
         navigationView.setNavigationItemSelectedListener(this);
-        adapter = new AppsAdapter(getPresenter());
+        adapter = new AppsAdapter(presenter);
         recyclerView.setAdapter(adapter);
         gestureDetector = new GestureDetector(this, mainGesture);
         initWallpaper();
+        mainLayout.setDragController(presenter.getDragController(), presenter);
+        getPresenter().getDragController().addDropTarget(mainLayout);
+        dropSpot.setup(mainLayout, presenter.getDragController(), presenter);
+
     }
 
     @Override public void onBackPressed() {
@@ -179,6 +185,10 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         adapter.remove(position);
     }
 
+    @Override public void closeDrawer() {
+        AnimUtil.circularRevealFromBottom(appsDrawer, false);
+    }
+
     @Override public void onAppSelected(AppsModel model) {
 
     }
@@ -187,6 +197,10 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
 //        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
 //        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
 //        if (drawerLayout != null) drawerLayout.setBackground(wallpaperDrawable);
+    }
+
+    public DragLayer getMainLayout() {
+        return mainLayout;
     }
 
     public MainDrawerPresenter getPresenter() {
@@ -202,6 +216,12 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         @Override protected void onDoubleClick() {
             super.onDoubleClick();
             Logger.e("double");
+            ChooseAppPopupPager popup = (ChooseAppPopupPager) getSupportFragmentManager().findFragmentByTag(POPUP);
+            if (popup == null) {
+                popup = new ChooseAppPopupPager();
+            }
+            popup.show(getSupportFragmentManager(), POPUP);
+
         }
 
         @Override protected void onLongClick() {

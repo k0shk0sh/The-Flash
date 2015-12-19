@@ -5,28 +5,31 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import com.fastaccess.tfl.R;
 import com.fastaccess.tfl.apps.AppsAdapter;
 import com.fastaccess.tfl.apps.AppsLoader;
 import com.fastaccess.tfl.apps.AppsModel;
+import com.fastaccess.tfl.helper.Logger;
+import com.fastaccess.tfl.ui.widget.drag.DragController;
+import com.fastaccess.tfl.ui.widget.drag.DropSpot;
 
 import java.util.List;
 
 /**
  * Created by Kosh on 19/12/15 9:32 AM
  */
-public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<AppsModel>>, AppsAdapter.OnAppClick {
+public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<AppsModel>>, AppsAdapter.OnAppClick,
+        DropSpot.OnDragLisenter {
 
     private final MainDrawerModel mainDrawerModel;
+    private final DragController dragController;
 
     private MainDrawerPresenter(MainDrawerModel mainDrawerModel) {
         this.mainDrawerModel = mainDrawerModel;
         mainDrawerModel.getContext().getLoaderManager().initLoader(1, null, this);
+        dragController = new DragController(mainDrawerModel.getContext());
     }
 
     public static MainDrawerPresenter with(MainDrawerModel mainDrawerModel) {
@@ -60,16 +63,31 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
     }
 
     @Override public void onLongClick(AppsModel model, int position, View v) {
-        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-        popupMenu.inflate(R.menu.cab_delete_wallpapers);
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.menu_delete) {
-                    return true;
-                }
-                return false;
-            }
-        });
-        popupMenu.show();
+        dragController.startDrag(v, mainDrawerModel.getContext().getMainLayout(), v, DragController.DRAG_ACTION_MOVE);
+
+//        dragController.startDrag(v, mDragLayer, model, DragController.DRAG_ACTION_MOVE);
+//        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+//        popupMenu.inflate(R.menu.cab_delete_wallpapers);
+//        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            @Override public boolean onMenuItemClick(MenuItem item) {
+//                if (item.getItemId() == R.id.menu_delete) {
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+//        popupMenu.show();
+    }
+
+    public DragController getDragController() {
+        return dragController;
+    }
+
+    @Override public void onDrop(View v, View where) {
+        Logger.e(v.getClass().getSimpleName() + "||" + where.getClass().getSimpleName());
+    }
+
+    @Override public void onStart() {
+        mainDrawerModel.closeDrawer();
     }
 }

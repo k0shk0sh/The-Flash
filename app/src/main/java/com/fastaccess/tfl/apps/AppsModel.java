@@ -4,10 +4,12 @@ import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.provider.BaseColumns;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.google.gson.annotations.Expose;
@@ -19,6 +21,7 @@ import java.util.List;
 /**
  * Created by Kosh on 9/3/2015. copyrights are reserved
  */
+@Table(name = "AppsModel", id = BaseColumns._ID)
 public class AppsModel extends Model {
 
     public enum ItemType {
@@ -33,6 +36,7 @@ public class AppsModel extends Model {
     @Column @Expose private int appPosition;
     @Column @Expose private int countEntry;
     @Column ItemType itemType = ItemType.APP;
+    @Column boolean isHidden;
     private List<FolderModel> folderModels;
     private Bitmap bitmap;
     private ComponentName componentName;
@@ -161,6 +165,14 @@ public class AppsModel extends Model {
 
     public void setFolderModels(List<FolderModel> folderModels) {
         this.folderModels = folderModels;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 
     public static void add(List<AppsModel> modelList) {

@@ -48,9 +48,16 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
             Collections.sort(list, new ResolveInfo.DisplayNameComparator(mPm));
             for (ResolveInfo resolveInfo : list) {
                 if (!resolveInfo.activityInfo.applicationInfo.packageName.equals(getContext().getPackageName())) {
+                    AppsModel exists = AppsModel.getAppByPackage(resolveInfo.activityInfo.applicationInfo.packageName);
                     AppsModel model = new AppsModel(mPm, resolveInfo, mIconCache, null);
-                    model.save();
-                    entries.add(model);
+                    if (exists == null) {
+                        model.save();
+                        entries.add(model);
+                    } else {
+                        if (!exists.isHidden()) {
+                            entries.add(model);
+                        }
+                    }
                 }
             }
             return entries;
@@ -145,9 +152,14 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
                     if (resolveInfo != null) {
                         if (!packageName.equalsIgnoreCase(context.getPackageName())) {
                             AppsModel check = AppsModel.getAppByPackage(resolveInfo.activityInfo.packageName);
+                            AppsModel model = new AppsModel(pm, resolveInfo, iconCache, null);
                             if (check == null) {
-                                AppsModel model = new AppsModel(pm, resolveInfo, iconCache, null);
+                                model.save();
                                 result.add(model);
+                            } else {
+                                if (!check.isHidden()) {
+                                    result.add(model);
+                                }
                             }
                         }
                     }

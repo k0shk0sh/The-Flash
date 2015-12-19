@@ -5,6 +5,9 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -189,6 +192,22 @@ public class AppHelper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static PackageInfo getPackageInfo(Context context, String packageName) {
+        try {
+            return context.getPackageManager().getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ResolveInfo getResolveInfo(Context context, String packageName) {
+        Intent mainIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+        if (mainIntent != null)
+            return context.getPackageManager().resolveActivity(mainIntent, 0);
+        return null;
     }
 
 }
