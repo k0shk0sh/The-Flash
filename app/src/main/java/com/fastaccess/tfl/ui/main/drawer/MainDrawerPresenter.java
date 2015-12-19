@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.fastaccess.tfl.R;
 import com.fastaccess.tfl.apps.AppsAdapter;
 import com.fastaccess.tfl.apps.AppsLoader;
 import com.fastaccess.tfl.apps.AppsModel;
@@ -55,7 +59,17 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
         }
     }
 
-    @Override public void onLongClick(AppsModel model, int position) {
-
+    @Override public void onLongClick(AppsModel model, int position, View v) {
+        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+        popupMenu.inflate(R.menu.cab_delete_wallpapers);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.menu_delete) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 }

@@ -7,13 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -21,6 +19,7 @@ import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,8 +30,6 @@ import java.util.List;
  * Created by kosh20111 on 10/7/2015
  */
 public class AppHelper {
-
-    private static final int GPS_REQUEST_CODE = 2004;
 
     public static boolean isOnline(Context context) {
         boolean haveConnectedWifi = false;
@@ -70,13 +67,14 @@ public class AppHelper {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static boolean isGPSEnabled(Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    public static void showKeyboard(@NonNull View v) {
+        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(v, 0);
     }
 
-    public static void turnGpsOn(Activity context) {
-        context.startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), GPS_REQUEST_CODE);
+    public static void hideKeyboard(@NonNull View v) {
+        InputMethodManager inputManager = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
     public static void start(Activity aciActivity, Class cl, View view, String transName) {

@@ -24,12 +24,12 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
     public interface OnAppClick {
         void onAppClick(AppsModel model);
 
-        void onLongClick(AppsModel model, int position);
+        void onLongClick(AppsModel model, int position, View v);
     }
 
     private OnAppClick onAppClick;
-
     private List<AppsModel> modelList;
+    private List<AppsModel> searchableList;
 
     public AppsAdapter(OnAppClick onAppClick) {
         this.onAppClick = onAppClick;
@@ -51,7 +51,7 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
         });
         h.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override public boolean onLongClick(View v) {
-                onAppClick.onLongClick(model, h.getAdapterPosition());
+                onAppClick.onLongClick(model, h.getAdapterPosition(), v);
                 return true;
             }
         });
@@ -62,7 +62,7 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
     }
 
     @Override public Filter getFilter() {
-        return null;
+        return appsFilter;
     }
 
     public void remove(int position) {
@@ -87,4 +87,33 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
             super(itemView);
         }
     }
+
+    private Filter appsFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            final FilterResults oReturn = new FilterResults();
+            final List<AppsModel> results = new ArrayList<>();
+            if (searchableList == null) {
+                searchableList = modelList;
+            }
+            if (charSequence != null) {
+                if (searchableList != null && searchableList.size() > 0) {
+                    for (final AppsModel appInfo : searchableList) {
+                        if (appInfo.getAppName().toLowerCase().contains(charSequence.toString())) {
+                            results.add(appInfo);
+                        }
+                    }
+                }
+                oReturn.values = results;
+                oReturn.count = results.size();
+            }
+            return oReturn;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            modelList = (List<AppsModel>) filterResults.values;
+            notifyDataSetChanged();
+        }
+    };
 }

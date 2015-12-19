@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -29,7 +28,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.fastaccess.tfl.R;
@@ -76,16 +74,6 @@ public class ViewHelper {
                 if (revertOnFinish) animateTranslateY(0, false, view);
             }
         });
-    }
-
-    public static void showKeyboard(@NonNull View v, @NonNull Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(v, 0);
-    }
-
-    public static void hideKeyboard(@NonNull View view, @NonNull Activity activity) {
-        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public static boolean isTablet(Resources resources) {

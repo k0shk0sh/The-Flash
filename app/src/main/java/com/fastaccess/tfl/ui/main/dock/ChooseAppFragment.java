@@ -64,24 +64,22 @@ public class ChooseAppFragment extends BaseFragment implements LoaderManager.Loa
         getActivity().getLoaderManager().initLoader(isFolder ? 2 : 3, null, this);
     }
 
-    @Override public Loader<List<AppsModel>> onCreateLoader(int id, Bundle args)
-    {
+    @Override public Loader<List<AppsModel>> onCreateLoader(int id, Bundle args) {
         if (getActivity() != null && !getActivity().isFinishing()) {
-            progress.setVisibility(View.VISIBLE);
+            recyclerView.showProgress(progress);
         }
         return new AppsLoader(getContext());
     }
 
     @Override public void onLoadFinished(Loader<List<AppsModel>> loader, List<AppsModel> data) {
         if (getActivity() != null && !getActivity().isFinishing()) {
-            progress.setVisibility(View.GONE);
+            recyclerView.hideProgress(progress);
             adapter.add(data);
         }
     }
 
     @Override public void onLoaderReset(Loader<List<AppsModel>> loader) {
         if (getActivity() != null && !getActivity().isFinishing()) {
-            progress.setVisibility(View.GONE);
             adapter.reset();
         }
     }

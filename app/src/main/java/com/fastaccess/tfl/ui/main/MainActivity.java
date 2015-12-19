@@ -1,10 +1,9 @@
 package com.fastaccess.tfl.ui.main;
 
-import android.app.WallpaperManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -14,7 +13,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,7 +24,9 @@ import com.fastaccess.tfl.apps.AppsAdapter;
 import com.fastaccess.tfl.apps.AppsModel;
 import com.fastaccess.tfl.core.BaseActivity;
 import com.fastaccess.tfl.helper.AnimUtil;
-import com.fastaccess.tfl.ui.main.dock.ChooseAppPopupPager;
+import com.fastaccess.tfl.helper.AppHelper;
+import com.fastaccess.tfl.helper.GestureHelper;
+import com.fastaccess.tfl.helper.Logger;
 import com.fastaccess.tfl.ui.main.dock.MainDockModel;
 import com.fastaccess.tfl.ui.main.drawer.MainDrawerModel;
 import com.fastaccess.tfl.ui.main.drawer.MainDrawerPresenter;
@@ -38,6 +41,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
+import butterknife.OnTouch;
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends BaseActivity implements OnNavigationItemSelectedListener, MainDrawerModel, MainDockModel {
@@ -59,13 +64,18 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     private AppsAdapter adapter;
     private MainDrawerPresenter presenter;
     private final static String POPUP = "popup";
+    private GestureDetector gestureDetector;
+
+    @OnTouch(R.id.mainLayout) public boolean onGesture(MotionEvent e) {
+        return gestureDetector.onTouchEvent(e);
+    }
 
     @OnClick(R.id.openDrawer) void onOpenAppDrawer() {
-        ChooseAppPopupPager popup = (ChooseAppPopupPager) getSupportFragmentManager().findFragmentByTag(POPUP);
-        if (popup == null) {
-            popup = new ChooseAppPopupPager();
-        }
-        popup.show(getSupportFragmentManager(), POPUP);
+//        ChooseAppPopupPager popup = (ChooseAppPopupPager) getSupportFragmentManager().findFragmentByTag(POPUP);
+//        if (popup == null) {
+//            popup = new ChooseAppPopupPager();
+//        }
+//        popup.show(getSupportFragmentManager(), POPUP);
         AnimUtil.circularRevealFromBottom(appsDrawer, appsDrawer.getVisibility() == View.INVISIBLE);
     }
 
@@ -74,11 +84,25 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     }
 
     @OnClick(R.id.toggleSearch) void onToggle() {
+        if (!appsDrawer.isShown())
+            AnimUtil.circularRevealFromBottom(appsDrawer, true);
         AnimUtil.circularReveal(searchHolder, true);
+        searchText.requestFocus();
+        AppHelper.showKeyboard(searchText);
     }
 
     @OnClick(R.id.cancelSearch) void onCancel() {
         AnimUtil.circularReveal(searchHolder, false);
+        searchText.setText("");
+        adapter.getFilter().filter("");
+        AppHelper.hideKeyboard(searchText);
+    }
+
+    @OnTextChanged(value = R.id.searchText, callback = OnTextChanged.Callback.TEXT_CHANGED)
+    void onTextChanged(CharSequence txt, int a, int b, int c) {
+        if (txt != null) {
+            adapter.getFilter().filter(txt);
+        }
     }
 
     @Override protected int layoutResId() {
@@ -89,9 +113,11 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         return null;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -99,6 +125,7 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         navigationView.setNavigationItemSelectedListener(this);
         adapter = new AppsAdapter(getPresenter());
         recyclerView.setAdapter(adapter);
+        gestureDetector = new GestureDetector(this, mainGesture);
         initWallpaper();
     }
 
@@ -126,19 +153,9 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         return false;
     }
 
-    private void initWallpaper() {
-        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
-        if (drawerLayout != null) drawerLayout.setBackground(wallpaperDrawable);
-    }
-
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Toast.makeText(MainActivity.this, "" + (resultCode == RESULT_OK), Toast.LENGTH_SHORT).show();
-    }
-
-    public void onEvent(WallpaperChangedReceiver.WallpaperReceiver wallpaperReceiver) {
-        initWallpaper();
     }
 
     @Override public MainActivity getContext() {
@@ -146,11 +163,11 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     }
 
     @Override public void onStartLoading() {
-        progress.setVisibility(View.VISIBLE);
+        recyclerView.showProgress(progress);
     }
 
     @Override public void onFinishedLoading(List<AppsModel> models) {
-        progress.setVisibility(View.GONE);
+        recyclerView.hideProgress(progress);
         adapter.setModelList(models);
     }
 
@@ -162,12 +179,55 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         adapter.remove(position);
     }
 
+    @Override public void onAppSelected(AppsModel model) {
+
+    }
+
+    private void initWallpaper() {
+//        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+//        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+//        if (drawerLayout != null) drawerLayout.setBackground(wallpaperDrawable);
+    }
+
     public MainDrawerPresenter getPresenter() {
         if (presenter == null) presenter = MainDrawerPresenter.with(this);
         return presenter;
     }
 
-    @Override public void onAppSelected(AppsModel model) {
-
+    public void onEvent(WallpaperChangedReceiver.WallpaperReceiver wallpaperReceiver) {
+        initWallpaper();
     }
+
+    private GestureHelper.SimpleGestureHelper mainGesture = new GestureHelper.SimpleGestureHelper() {
+        @Override protected void onDoubleClick() {
+            super.onDoubleClick();
+            Logger.e("double");
+        }
+
+        @Override protected void onLongClick() {
+            super.onLongClick();
+            Logger.e("Long");
+        }
+
+        @Override protected void onSwipeRight() {
+            super.onSwipeRight();
+            Logger.e("Right");
+        }
+
+        @Override protected void onSwipeLeft() {
+            super.onSwipeLeft();
+            Logger.e("Left");
+        }
+
+        @Override protected void onSwipeUp() {
+            super.onSwipeUp();
+            Logger.e("Up");
+        }
+
+        @Override protected void onSwipeDown() {
+            super.onSwipeDown();
+            Logger.e("Down");
+        }
+    };
+
 }

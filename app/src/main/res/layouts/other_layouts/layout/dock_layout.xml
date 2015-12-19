@@ -14,30 +14,6 @@
     android:orientation="horizontal"
     android:visibility="visible">
 
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
-
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
-
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
-
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
-
     <ImageButton
         android:id="@+id/openDrawer"
         android:layout_width="wrap_content"
@@ -46,12 +22,32 @@
         android:background="@color/transparent"
         android:src="@drawable/all_apps_button_icon"/>
 
-    <!--<com.fastaccess.tfl.ui.widget.DynamicRecyclerView-->
-    <!--android:id="@+id/dockList"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:orientation="horizontal"-->
-    <!--app:layoutManager="android.support.v7.widget.LinearLayoutManager"-->
-    <!--app:reverseLayout="false"-->
-    <!--app:stackFromEnd="false"/>-->
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
 </LinearLayout>
