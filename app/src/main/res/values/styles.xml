@@ -28,19 +28,22 @@
         <item name="colorControlHighlight">?colorAccent</item>
     </style>
 
-    <style name="ErrorTextStyle" parent="TextAppearance.Design.Error">
-        <item name="android:textSize">@dimen/desc_text_size</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="HintTextStyle" parent="TextAppearance.Design.Hint">
-        <item name="android:textSize">@dimen/desc_text_size</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="MenuItemText">
         <item name="android:textColor">?colorPrimary</item>
         <item name="colorControlNormal">?colorAccent</item>
         <item name="colorControlHighlight">?colorAccent</item>
+    </style>
+
+    <style name="WorkspaceIcon">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:shadowRadius">2.0</item>
+        <item name="android:shadowColor">#B0000000</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 </resources>

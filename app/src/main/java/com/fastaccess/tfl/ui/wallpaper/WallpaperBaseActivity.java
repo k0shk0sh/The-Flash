@@ -9,7 +9,7 @@ import android.content.Context;
  * implementation), Callers should not assume that the base class extends Context, instead use
  * either {@link #getContext} or {@link #getActivity}
  */
-public class BaseActivity extends Activity {
+public class WallpaperBaseActivity extends Activity {
 
     public Context getContext() {
         return this;

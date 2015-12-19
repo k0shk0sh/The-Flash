@@ -33,8 +33,12 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
 
     @Override
     public List<AppsModel> loadInBackground() {
-        List<AppsModel> entries = new ArrayList<AppsModel>();
+//        List<AppsModel> existing = AppsModel.getAll();
+//        if (existing != null && !existing.isEmpty()) {
+//            return existing;
+//        }
         try {
+            List<AppsModel> entries = new ArrayList<AppsModel>();
             Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> list = mPm.queryIntentActivities(mainIntent, 0);
@@ -44,11 +48,9 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
             Collections.sort(list, new ResolveInfo.DisplayNameComparator(mPm));
             for (ResolveInfo resolveInfo : list) {
                 if (!resolveInfo.activityInfo.applicationInfo.packageName.equals(getContext().getPackageName())) {
-                    AppsModel check = new AppsModel().getAppByPackage(resolveInfo.activityInfo.applicationInfo.packageName);
-                    if (check == null) {
-                        AppsModel model = new AppsModel(mPm, resolveInfo, mIconCache, null);
-                        entries.add(model);
-                    }
+                    AppsModel model = new AppsModel(mPm, resolveInfo, mIconCache, null);
+                    model.save();
+                    entries.add(model);
                 }
             }
             return entries;
@@ -118,7 +120,6 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
         super.forceLoad();
     }
 
-
     private Comparator<PackageInfo> sortApps = new Comparator<PackageInfo>() {
         @Override
         public int compare(PackageInfo one, PackageInfo two) {
@@ -143,7 +144,7 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
                     ResolveInfo resolveInfo = pm.resolveActivity(mainIntent, 0);
                     if (resolveInfo != null) {
                         if (!packageName.equalsIgnoreCase(context.getPackageName())) {
-                            AppsModel check = new AppsModel().getAppByPackage(resolveInfo.activityInfo.packageName);
+                            AppsModel check = AppsModel.getAppByPackage(resolveInfo.activityInfo.packageName);
                             if (check == null) {
                                 AppsModel model = new AppsModel(pm, resolveInfo, iconCache, null);
                                 result.add(model);
@@ -153,7 +154,7 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
                 }
             }
             process.waitFor();
-            Collections.sort(result, new AppsModel().sortApps);
+            Collections.sort(result, AppsModel.sortApps);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

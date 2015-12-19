@@ -40,6 +40,8 @@ import android.graphics.drawable.PaintDrawable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
+import com.fastaccess.tfl.helper.PrefHelper;
+
 import java.util.HashMap;
 
 /**
@@ -98,9 +100,11 @@ public class IconCache {
 
     private void loadIconPack() {
         mIconPackHelper.unloadIconPack();
-        String iconPack = "";
+        String iconPack = PrefHelper.getString(IconPackHelper.THEME_PREF);
         if (!TextUtils.isEmpty(iconPack) && !mIconPackHelper.loadIconPack(iconPack)) {
-//            AppHelper.putIconPack(mContext, "");
+            PrefHelper.set(IconPackHelper.THEME_PREF, iconPack);
+        } else {
+            PrefHelper.clearKey(IconPackHelper.THEME_PREF);
         }
     }
 
@@ -264,7 +268,6 @@ public class IconCache {
         }
         return entry;
     }
-
 
     public Bitmap getIcon(String packaageName, String activityInfoName) {
         ComponentName componentName = new ComponentName(packaageName, activityInfoName);

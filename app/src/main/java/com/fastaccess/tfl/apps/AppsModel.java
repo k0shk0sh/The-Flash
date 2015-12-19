@@ -20,23 +20,20 @@ import java.util.List;
  * Created by Kosh on 9/3/2015. copyrights are reserved
  */
 public class AppsModel extends Model {
-    @Column
-    @Expose
-    private String appName;
-    @Column(unique = true, onUniqueConflicts = Column.ConflictAction.REPLACE, onUniqueConflict = Column.ConflictAction.REPLACE)
-    @Expose
-    private String packageName;
-    @Column
-    @Expose
-    private String iconPath;
-    @Column
-    @Expose
-    private String activityInfoName;
-    @Column
-    @Expose
-    private int appPosition;
-    @Column
-    private int countEntry;
+
+    public enum ItemType {
+        FOLDER, APP
+    }
+
+    @Column @Expose private String appName;
+    @Column(unique = true, onUniqueConflicts = Column.ConflictAction.IGNORE, onUniqueConflict = Column.ConflictAction.IGNORE)
+    @Expose private String packageName;
+    @Column @Expose private String iconPath;
+    @Column @Expose private String activityInfoName;
+    @Column @Expose private int appPosition;
+    @Column @Expose private int countEntry;
+    @Column ItemType itemType = ItemType.APP;
+    private List<FolderModel> folderModels;
     private Bitmap bitmap;
     private ComponentName componentName;
     private IconCache iconCache;
@@ -44,7 +41,7 @@ public class AppsModel extends Model {
     private ResolveInfo info;
     private HashMap<Object, CharSequence> labelCache;
 
-    public AppsModel() {}
+    public AppsModel() {}//do not initialize
 
     public AppsModel(PackageManager pm, ResolveInfo info, IconCache iconCache, HashMap<Object, CharSequence> labelCache) {
         this.packageName = info.activityInfo.applicationInfo.packageName;
@@ -52,15 +49,6 @@ public class AppsModel extends Model {
         this.activityInfoName = info.activityInfo.name;
         this.appName = info.loadLabel(pm).toString();
         iconCache.getTitleAndIcon(this, info, labelCache);
-    }
-
-    public AppsModel DoIt(PackageManager pm, ResolveInfo info, IconCache iconCache, HashMap<Object, CharSequence> labelCache) {
-        this.packageName = info.activityInfo.applicationInfo.packageName;
-        this.componentName = new ComponentName(packageName, info.activityInfo.name);
-        this.activityInfoName = info.activityInfo.name;
-        this.appName = info.loadLabel(pm).toString();
-        iconCache.getTitleAndIcon(this, info, labelCache);
-        return this;
     }
 
     public PackageManager getPm() {
@@ -143,7 +131,39 @@ public class AppsModel extends Model {
         this.activityInfoName = activityInfoName;
     }
 
-    public void add(List<AppsModel> modelList) {
+    public void setAppPosition(int appPosition) {
+        this.appPosition = appPosition;
+    }
+
+    public int getAppPosition() {
+        return appPosition;
+    }
+
+    public int getCountEntry() {
+        return countEntry;
+    }
+
+    public void setCountEntry(int countEntry) {
+        this.countEntry = countEntry;
+    }
+
+    public ItemType getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(ItemType itemType) {
+        this.itemType = itemType;
+    }
+
+    public List<FolderModel> getFolderModels() {
+        return folderModels;
+    }
+
+    public void setFolderModels(List<FolderModel> folderModels) {
+        this.folderModels = folderModels;
+    }
+
+    public static void add(List<AppsModel> modelList) {
         if (modelList != null && modelList.size() != 0) {
             ActiveAndroid.beginTransaction();
             try {
@@ -158,40 +178,39 @@ public class AppsModel extends Model {
         }
     }
 
-    public boolean deleteByPackageName(String packageName) {
+    public static boolean deleteByPackageName(String packageName) {
         return new Delete().from(AppsModel.class).where("packageName = ?", packageName).execute() != null;
     }
 
-    public boolean deleteById(long id) {
+    public static boolean deleteById(long id) {
         return new Delete().from(AppsModel.class).where("id = ?", id).execute() != null;
     }
 
-    public AppsModel getAppByPackage(String packageName) {
+    public static AppsModel getAppByPackage(String packageName) {
         return new Select().from(AppsModel.class).where("packageName = ?", packageName).executeSingle();
     }
 
-    public List<AppsModel> getAll() {
+    public static List<AppsModel> getAll() {
         return new Select().from(AppsModel.class).orderBy("appPosition ASC").execute();
     }
 
-    public List<AppsModel> getAllByUsage() {
+    public static List<AppsModel> getAllByUsage() {
         return new Select().from(AppsModel.class).orderBy("countEntry DESC").execute();
     }
 
-
-    public void deleteAll() {
+    public static void deleteAll() {
         new Delete().from(AppsModel.class).execute();
     }
 
-    public int getAppPosition() {
-        return appPosition;
+    public static AppsModel getById(int id) {
+        return new Select().from(AppsModel.class).where("id = ?", id).executeSingle();
     }
 
-    public void setAppPosition(int appPosition) {
-        this.appPosition = appPosition;
+    public static int countAll() {
+        return new Select().from(AppsModel.class).count();
     }
 
-    public int lastPosition() {
+    public static int lastPosition() {
         AppsModel appsModel = new Select().from(AppsModel.class).orderBy("appPosition DESC").limit(1).executeSingle();
         if (appsModel != null) {
             return appsModel.getAppPosition();
@@ -199,23 +218,7 @@ public class AppsModel extends Model {
         return 0;
     }
 
-    public AppsModel getById(int id) {
-        return new Select().from(AppsModel.class).where("id = ?", id).executeSingle();
-    }
-
-    public int countAll() {
-        return new Select().from(AppsModel.class).count();
-    }
-
-    public int getCountEntry() {
-        return countEntry;
-    }
-
-    public void setCountEntry(int countEntry) {
-        this.countEntry = countEntry;
-    }
-
-    public void updateEntry(String packageName) {
+    public static void updateEntry(String packageName) {
         if (packageName != null && !packageName.isEmpty()) {
             AppsModel app = getAppByPackage(packageName);
             if (app != null) {
@@ -225,7 +228,7 @@ public class AppsModel extends Model {
         }
     }
 
-    public Comparator<AppsModel> sortApps = new Comparator<AppsModel>() {
+    public static Comparator<AppsModel> sortApps = new Comparator<AppsModel>() {
         @Override
         public int compare(AppsModel one, AppsModel two) {
             return one.getAppName().compareTo(two.getAppName());

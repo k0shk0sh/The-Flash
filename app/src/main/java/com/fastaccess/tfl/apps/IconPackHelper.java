@@ -46,6 +46,7 @@ import java.util.Map;
 
 public class IconPackHelper {
 
+    public static final String THEME_PREF = "theme_pack";
     static final String ICON_MASK_TAG = "iconmask";
     static final String ICON_BACK_TAG = "iconback";
     static final String ICON_UPON_TAG = "iconupon";

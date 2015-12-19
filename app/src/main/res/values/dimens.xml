@@ -23,6 +23,6 @@
     <dimen name="infomation_count_textsize">11dp</dimen>
     <dimen name="infomation_count_padding">4dp</dimen>
     <dimen name="infomation_count_circle_radius">7dp</dimen>
-    <dimen name="app_icon_size">48dp</dimen>
+    <dimen name="app_icon_size">64dp</dimen>
 </resources>
 

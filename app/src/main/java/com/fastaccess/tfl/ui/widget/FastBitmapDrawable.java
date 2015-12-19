@@ -40,7 +40,7 @@ public class FastBitmapDrawable extends Drawable {
         public float getInterpolation(float input) {
             if (input < 0.05f) {
                 return input / 0.05f;
-            } else if (input < 0.3f){
+            } else if (input < 0.3f) {
                 return 1;
             } else {
                 return (1 - input) / 0.7f;
@@ -54,8 +54,7 @@ public class FastBitmapDrawable extends Drawable {
     private static final ColorMatrix sTempMatrix = new ColorMatrix();
 
     /**
-     * Store the brightness colors filters to optimize animations during icon press. This
-     * only works for non-ghost-mode icons.
+     * Store the brightness colors filters to optimize animations during icon press. This only works for non-ghost-mode icons.
      */
     private static final SparseArray<ColorFilter> sCachedBrightnessFilter =
             new SparseArray<ColorFilter>();
@@ -72,7 +71,7 @@ public class FastBitmapDrawable extends Drawable {
     private boolean mPressed = false;
     private ObjectAnimator mPressedAnimator;
 
-  public   FastBitmapDrawable(Bitmap b) {
+    public FastBitmapDrawable(Bitmap b) {
         mAlpha = 255;
         mBitmap = b;
         setBounds(0, 0, b.getWidth(), b.getHeight());
@@ -144,8 +143,7 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     /**
-     * When enabled, the icon is grayed out and the contrast is increased to give it a 'ghost'
-     * appearance.
+     * When enabled, the icon is grayed out and the contrast is increased to give it a 'ghost' appearance.
      */
     public void setGhostModeEnabled(boolean enabled) {
         if (mGhostModeEnabled != enabled) {
@@ -195,11 +193,11 @@ public class FastBitmapDrawable extends Drawable {
 
                 // For ghost mode, set the color range to [GHOST_MODE_MIN_COLOR_RANGE, 255]
                 float range = (255 - GHOST_MODE_MIN_COLOR_RANGE) / 255.0f;
-                sTempMatrix.set(new float[] {
+                sTempMatrix.set(new float[]{
                         range, 0, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
                         0, range, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
                         0, 0, range, 0, GHOST_MODE_MIN_COLOR_RANGE,
-                        0, 0, 0, 1, 0 });
+                        0, 0, 0, 1, 0});
                 sGhostModeMatrix.preConcat(sTempMatrix);
             }
 

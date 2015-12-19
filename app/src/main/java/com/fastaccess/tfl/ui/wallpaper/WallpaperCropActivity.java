@@ -53,7 +53,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-public class WallpaperCropActivity extends BaseActivity implements Handler.Callback {
+public class WallpaperCropActivity extends WallpaperBaseActivity implements Handler.Callback {
     private static final String LOGTAG = "Launcher3.CropActivity";
     public static final String WALLPAPER_CROP_PREFERENCES_KEY =
             "WallpaperCropActivity";

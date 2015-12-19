@@ -23,6 +23,8 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
 
     public interface OnAppClick {
         void onAppClick(AppsModel model);
+
+        void onLongClick(AppsModel model, int position);
     }
 
     private OnAppClick onAppClick;
@@ -35,15 +37,22 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
     }
 
     @Override public VHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AppsHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.apps_row_item, parent, false));
+        return new AppsHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_row_item, parent, false));
     }
 
     @Override public void onBindViewHolder(VHolder holder, int position) {
         final AppsHolder h = (AppsHolder) holder;
-        h.appName.applyFromApplicationInfo(modelList.get(position));
+        final AppsModel model = modelList.get(position);
+        h.appName.applyFromApplicationInfo(model);
         h.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                onAppClick.onAppClick(modelList.get(h.getAdapterPosition()));
+                onAppClick.onAppClick(model);
+            }
+        });
+        h.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override public boolean onLongClick(View v) {
+                onAppClick.onLongClick(model, h.getAdapterPosition());
+                return true;
             }
         });
     }
@@ -54,6 +63,11 @@ public class AppsAdapter extends RecyclerView.Adapter<VHolder> implements Filter
 
     @Override public Filter getFilter() {
         return null;
+    }
+
+    public void remove(int position) {
+        modelList.remove(position);
+        notifyItemRemoved(position);
     }
 
     public void setModelList(List<AppsModel> modelList) {
