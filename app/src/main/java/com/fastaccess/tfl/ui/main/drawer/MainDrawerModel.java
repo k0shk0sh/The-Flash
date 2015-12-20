@@ -23,4 +23,6 @@ public interface MainDrawerModel {
     void closeDrawer();
 
     void onDropZone(boolean show);
+
+    void onKeyboardHidden();
 }

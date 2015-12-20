@@ -48,6 +48,7 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import butterknife.OnTouch;
 import de.greenrobot.event.EventBus;
+import icepick.State;
 
 public class MainActivity extends BaseActivity implements OnNavigationItemSelectedListener, MainDrawerModel, MainDockModel {
 
@@ -71,6 +72,7 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     @Bind(R.id.dropLayout) View dropZone;
     @Bind(R.id.appInfo) DropSpot appInfo;
     @Bind(R.id.uninstallApp) DropSpot uninstallApp;
+    @State int hiddenCount;
     private AppsAdapter adapter;
     private MainDrawerPresenter presenter;
     private final static String POPUP = "popup";
@@ -94,6 +96,7 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         AnimUtil.circularReveal(searchHolder, true);
         searchText.requestFocus();
         AppHelper.showKeyboard(searchText);
+        hiddenCount = 0;
     }
 
     @OnClick(R.id.cancelSearch) void onCancel() {
@@ -138,6 +141,7 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         dropSpot.setup(mainLayout, presenter.getDragController());
         uninstallApp.setup(mainLayout, presenter.getDragController());
         appInfo.setup(mainLayout, presenter.getDragController());
+        searchText.setMainDrawerModel(this);
     }
 
     @Override public void onBackPressed() {
@@ -197,6 +201,13 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     @Override public void onDropZone(boolean show) {
         ViewHelper.animateVisibility(!show, appBar);
         ViewHelper.animateVisibility(show, dropZone);
+    }
+
+    @Override public void onKeyboardHidden() {
+        if (hiddenCount == 0) {
+            onCancel();
+        }
+        hiddenCount++;
     }
 
     @Override public void onAppSelected(AppsModel model) {

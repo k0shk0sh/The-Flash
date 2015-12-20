@@ -37,23 +37,15 @@ import com.fastaccess.tfl.helper.Logger;
  */
 public class DragLayer extends MyAbsoluteLayout implements DragSource, DropTarget {
     private DragController mDragController;
-    private DropSpot.OnDragLisenter onDragLisenter;
+    private DropSpot.OnDragListener onDragListener;
 
-    /**
-     * Used to create a new DragLayer from XML.
-     *
-     * @param context
-     *         The application's context.
-     * @param attrs
-     *         The attribtues set containing the Workspace's customization values.
-     */
     public DragLayer(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setDragController(DragController controller, DropSpot.OnDragLisenter onDragListener) {
+    public void setDragController(DragController controller, DropSpot.OnDragListener onDragListener) {
         mDragController = controller;
-        this.onDragLisenter = onDragListener;
+        this.onDragListener = onDragListener;
     }
 
     @Override
@@ -77,24 +69,22 @@ public class DragLayer extends MyAbsoluteLayout implements DragSource, DropTarge
     }
 
     public boolean allowDrag() {
-        // In this simple demo, any view that you touch can be dragged.
         return true;
     }
 
     public void onDropCompleted(View target, Object mDragInfo, boolean success) {
         toast("DragLayer2.onDropCompleted: " + target.getClass().getSimpleName() + " Check that the view moved.");
-        onDragLisenter.onDrop(target, mDragInfo);
+        onDragListener.onDrop(target, mDragInfo, success);
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        onDragLisenter.onStart();
+        onDragListener.onStart();
     }
 
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-                           DragView dragView, Object dragInfo) {
+    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {

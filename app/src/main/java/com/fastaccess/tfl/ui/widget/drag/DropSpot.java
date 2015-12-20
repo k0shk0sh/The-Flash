@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.fastaccess.tfl.R;
 import com.fastaccess.tfl.helper.Logger;
 
 /**
@@ -32,8 +33,8 @@ import com.fastaccess.tfl.helper.Logger;
 
 public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragController.DragListener {
 
-    public interface OnDragLisenter {
-        void onDrop(View v, Object app);
+    public interface OnDragListener {
+        void onDrop(View v, Object app, boolean success);
 
         void onStart();
     }
@@ -87,10 +88,11 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+        setBackgroundResource(R.drawable.folder_bg);
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        toast("onDragExit");
+        setBackgroundResource(0);
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {

@@ -23,7 +23,7 @@ import java.util.List;
  * Created by Kosh on 19/12/15 9:32 AM
  */
 public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<AppsModel>>, AppsAdapter.OnAppClick,
-        DropSpot.OnDragLisenter {
+        DropSpot.OnDragListener {
 
     private final MainDrawerModel mainDrawerModel;
     private final DragController dragController;
@@ -87,15 +87,17 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
         return dragController;
     }
 
-    @Override public void onDrop(View v, Object object) {
-        if (!(object instanceof AppsModel)) return;
-        AppsModel model = (AppsModel) object;
-        mainDrawerModel.onDropZone(false);
-        if (v.getId() == R.id.uninstallApp) {
-            AppHelper.uninstallApp(context, model.getPackageName());
-        } else if (v.getId() == R.id.appInfo) {
-            AppHelper.openAppInfo(context, model.getPackageName());
+    @Override public void onDrop(View v, Object object, boolean success) {
+        if (success) {
+            if (!(object instanceof AppsModel)) return;
+            AppsModel model = (AppsModel) object;
+            if (v.getId() == R.id.uninstallApp) {
+                AppHelper.uninstallApp(context, model.getPackageName());
+            } else if (v.getId() == R.id.appInfo) {
+                AppHelper.openAppInfo(context, model.getPackageName());
+            }
         }
+        mainDrawerModel.onDropZone(false);
     }
 
     @Override public void onStart() {

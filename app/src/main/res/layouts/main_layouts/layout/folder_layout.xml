@@ -12,50 +12,61 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/preview_background"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_gravity="center_horizontal|top"
-            android:background="@drawable/folder_bg">
+            android:layout_gravity="center"
+            android:background="@drawable/folder_bg"
+            android:gravity="center"
+            android:orientation="vertical">
 
 
-            <ImageView
-                android:id="@+id/app_0"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:antialias="true"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/app_1"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:antialias="true"/>
+                <ImageView
+                    android:id="@+id/app_0"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:antialias="true"
+                    android:src="@drawable/ic_info"/>
 
-            <ImageView
-                android:id="@+id/app_2"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:antialias="true"/>
+                <ImageView
+                    android:id="@+id/app_1"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:antialias="true"
+                    android:src="@drawable/ic_info"/>
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/app_3"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:antialias="true"/>
-        </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/app_2"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:antialias="true"
+                    android:src="@drawable/ic_info"/>
+
+                <ImageView
+                    android:id="@+id/app_3"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:antialias="true"
+                    android:src="@drawable/ic_info"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <com.fastaccess.tfl.ui.widget.BubbleTextView
             android:id="@+id/folder_icon_name"

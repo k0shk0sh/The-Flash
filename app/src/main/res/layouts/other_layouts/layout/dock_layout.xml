@@ -21,8 +21,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:drawablePadding="@dimen/spacing_micro"
         android:background="@color/transparent"
-        android:drawablePadding="@dimen/spacing_normal"
         android:drawableTop="@drawable/all_apps_button_icon"
         android:text="Apps"/>
 

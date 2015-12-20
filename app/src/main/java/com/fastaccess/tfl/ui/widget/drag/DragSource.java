@@ -28,7 +28,7 @@ public interface DragSource {
 
     boolean allowDrag();
 
-    void setDragController(DragController dragger, DropSpot.OnDragLisenter onDragLisenter);
+    void setDragController(DragController dragger, DropSpot.OnDragListener onDragListener);
 
     void onDropCompleted(View target, Object dragInfo, boolean success);
 }

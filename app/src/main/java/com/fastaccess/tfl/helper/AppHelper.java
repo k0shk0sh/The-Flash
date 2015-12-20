@@ -80,7 +80,8 @@ public class AppHelper {
 
     public static void hideKeyboard(@NonNull View v) {
         InputMethodManager inputManager = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if (inputManager.isActive())
+            inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
     public static void start(Activity aciActivity, Class cl, View view, String transName) {
