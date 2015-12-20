@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,6 +14,7 @@
         android:orientation="vertical">
 
         <FrameLayout
+            android:id="@+id/barHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -140,7 +142,6 @@
                 <include layout="@layout/drop_zone"/>
             </LinearLayout>
         </FrameLayout>
-
 
         <io.codetail.widget.RevealFrameLayout
             android:layout_width="match_parent"

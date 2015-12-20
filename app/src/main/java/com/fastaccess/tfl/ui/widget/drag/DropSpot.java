@@ -21,7 +21,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.fastaccess.tfl.R;
-import com.fastaccess.tfl.helper.Logger;
 
 /**
  * This class describes an area within a DragLayer where a dragged item can be dropped. It is a subclass of MyAbsoluteLayout, which means that it is a
@@ -37,6 +36,8 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
         void onDrop(View v, Object app, boolean success);
 
         void onStart();
+
+        void onEnd();
     }
 
     public DropSpot(Context context) {
@@ -71,21 +72,16 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
     }
 
     public void onDragStart(DragSource source, Object info, int dragAction) {
-        toast("onDragStart");
     }
 
     public void onDragEnd() {
-        toast("onDragEnd");
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        if (mDragLayer == null) return;
 //        onDragLisenter.onDrop(dragView, dragInfo);
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        toast("onDragEnter");
-    }
+    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {}
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         setBackgroundResource(R.drawable.folder_bg);
@@ -115,10 +111,4 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
             controller.addDropTarget(this);
         }
     }
-
-    public void toast(String msg) {
-        Logger.e(msg);
-    } // end toast
-
-
-} // end DropSpot
+}

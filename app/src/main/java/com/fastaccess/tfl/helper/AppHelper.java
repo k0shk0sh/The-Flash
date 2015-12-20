@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -228,5 +229,16 @@ public class AppHelper {
         Intent intent = new Intent(Intent.ACTION_DELETE);
         intent.setData(Uri.parse("package:" + packageName));
         context.startActivity(intent);
+    }
+
+    public static int getStatusBarHeight(Resources resources) {
+        int result;
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId);
+        } else {
+            result = (int) (50 * resources.getDisplayMetrics().scaledDensity);
+        }
+        return result;
     }
 }

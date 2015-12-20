@@ -88,6 +88,7 @@ public class DragLayer extends MyAbsoluteLayout implements DragSource, DropTarge
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+        if (onDragListener != null) onDragListener.onEnd();
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {

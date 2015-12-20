@@ -3,7 +3,6 @@ package com.fastaccess.tfl.ui.main;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -26,6 +25,7 @@ import com.fastaccess.tfl.core.BaseActivity;
 import com.fastaccess.tfl.helper.AnimUtil;
 import com.fastaccess.tfl.helper.AppHelper;
 import com.fastaccess.tfl.helper.GestureHelper;
+import com.fastaccess.tfl.helper.InputHelper;
 import com.fastaccess.tfl.helper.Logger;
 import com.fastaccess.tfl.helper.ViewHelper;
 import com.fastaccess.tfl.ui.main.dock.ChooseAppPopupPager;
@@ -52,6 +52,10 @@ import icepick.State;
 
 public class MainActivity extends BaseActivity implements OnNavigationItemSelectedListener, MainDrawerModel, MainDockModel {
 
+    private AppsAdapter adapter;
+    private MainDrawerPresenter presenter;
+    private final static String POPUP = "popup";
+    private GestureDetector gestureDetector;
     @Bind(R.id.toggleSearch) ForegroundImageView toggleSearch;
     @Bind(R.id.titleHolder) View titleHolder;
     @Bind(R.id.searchText) FontEditTextView searchText;
@@ -73,10 +77,6 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     @Bind(R.id.appInfo) DropSpot appInfo;
     @Bind(R.id.uninstallApp) DropSpot uninstallApp;
     @State int hiddenCount;
-    private AppsAdapter adapter;
-    private MainDrawerPresenter presenter;
-    private final static String POPUP = "popup";
-    private GestureDetector gestureDetector;
 
     @OnTouch(R.id.mainLayout) public boolean onGesture(MotionEvent e) {
         return gestureDetector.onTouchEvent(e);
@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
 
     @OnTextChanged(value = R.id.searchText, callback = OnTextChanged.Callback.TEXT_CHANGED)
     void onTextChanged(CharSequence txt, int a, int b, int c) {
-        if (txt != null) {
+        if (!InputHelper.isEmpty(txt)) {
             adapter.getFilter().filter(txt);
         }
     }
@@ -123,9 +123,6 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -142,6 +139,9 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         uninstallApp.setup(mainLayout, presenter.getDragController());
         appInfo.setup(mainLayout, presenter.getDragController());
         searchText.setMainDrawerModel(this);
+        if (AppHelper.isBelowLollipop()) {
+            findViewById(R.id.barHolder).setPadding(0, AppHelper.getStatusBarHeight(getResources()), 0, 0);
+        }
     }
 
     @Override public void onBackPressed() {

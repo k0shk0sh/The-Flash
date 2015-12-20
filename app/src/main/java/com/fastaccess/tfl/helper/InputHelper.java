@@ -15,20 +15,20 @@ import android.widget.TextView;
 public class InputHelper {
 
     public static boolean isEmpty(String text) {
-        return text == null || TextUtils.isEmpty(text) || isWhiteSpaces(text) || text.equalsIgnoreCase("null");
+        return text == null || TextUtils.isEmpty(text) || isWhiteSpaces(text);
     }
 
     public static boolean isEmpty(Object text) {
         return text == null || TextUtils.isEmpty(text.toString())
-                || isWhiteSpaces(text.toString()) || text.toString().equalsIgnoreCase("null");
+                || isWhiteSpaces(text.toString());
     }
 
     public static boolean isEmpty(EditText text) {
-        return !(!TextUtils.isEmpty(text.getText().toString()) && !isWhiteSpaces(text.getText().toString()));
+        return isEmpty(text.getText().toString());
     }
 
     public static boolean isEmpty(TextView text) {
-        return !(!TextUtils.isEmpty(text.getText().toString()) && !isWhiteSpaces(text.getText().toString()));
+        return isEmpty(text.getText().toString());
     }
 
     public static boolean isEmpty(TextInputLayout txt) {

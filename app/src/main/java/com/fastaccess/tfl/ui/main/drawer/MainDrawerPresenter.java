@@ -104,4 +104,8 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
         mainDrawerModel.closeDrawer();
         mainDrawerModel.onDropZone(true);
     }
+
+    @Override public void onEnd() {
+        mainDrawerModel.onDropZone(false);
+    }
 }

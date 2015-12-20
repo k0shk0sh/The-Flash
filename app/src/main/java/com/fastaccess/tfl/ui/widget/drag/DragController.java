@@ -398,44 +398,12 @@ public class DragController {
                     }
                 }
                 mLastDropTarget = dropTarget;
-
-            /* The original Launcher activity supports a delete region and scrolling.
-               It is not needed in this example.
-            
-            // Scroll, maybe, but not if we're in the delete region.
-            boolean inDeleteRegion = false;
-            if (mDeleteRegion != null) {
-                inDeleteRegion = mDeleteRegion.contains(screenX, screenY);
-            }
-            //Log.d(TAG, "inDeleteRegion=" + inDeleteRegion + " screenX=" + screenX
-            //        + " mScrollZone=" + mScrollZone);
-            if (!inDeleteRegion && screenX < mScrollZone) {
-                if (mScrollState == SCROLL_OUTSIDE_ZONE) {
-                    mScrollState = SCROLL_WAITING_IN_ZONE;
-                    mScrollRunnable.setDirection(SCROLL_LEFT);
-                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-                }
-            } else if (!inDeleteRegion && screenX > scrollView.getWidth() - mScrollZone) {
-                if (mScrollState == SCROLL_OUTSIDE_ZONE) {
-                    mScrollState = SCROLL_WAITING_IN_ZONE;
-                    mScrollRunnable.setDirection(SCROLL_RIGHT);
-                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-                }
-            } else {
-                if (mScrollState == SCROLL_WAITING_IN_ZONE) {
-                    mScrollState = SCROLL_OUTSIDE_ZONE;
-                    mScrollRunnable.setDirection(SCROLL_RIGHT);
-                    mHandler.removeCallbacks(mScrollRunnable);
-                }
-            }
-            */
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDragging) {
                     drop(screenX, screenY);
                 }
                 endDrag();
-
                 break;
             case MotionEvent.ACTION_CANCEL:
                 cancelDrag();
@@ -445,10 +413,8 @@ public class DragController {
     }
 
     private boolean drop(float x, float y) {
-
         final int[] coordinates = mCoordinatesTemp;
         DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);
-
         if (dropTarget != null) {
             dropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
                     (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
