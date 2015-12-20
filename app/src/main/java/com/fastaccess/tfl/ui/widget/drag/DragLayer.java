@@ -30,7 +30,7 @@ import com.fastaccess.tfl.helper.Logger;
 
 /**
  * A ViewGroup that coordinates dragging across its dscendants.
- * <p>
+ * <p/>
  * <p> This class used DragLayer in the Android Launcher activity as a model. It is a bit different in several respects: (1) It extends
  * MyAbsoluteLayout rather than FrameLayout; (2) it implements DragSource and DropTarget methods that were done in a separate Workspace class in the
  * Launcher.
@@ -81,24 +81,16 @@ public class DragLayer extends MyAbsoluteLayout implements DragSource, DropTarge
         return true;
     }
 
-    public void onDropCompleted(View target, boolean success) {
+    public void onDropCompleted(View target, Object mDragInfo, boolean success) {
         toast("DragLayer2.onDropCompleted: " + target.getClass().getSimpleName() + " Check that the view moved.");
+        onDragLisenter.onDrop(target, mDragInfo);
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        View v = (View) dragInfo;
-        toast("DragLayer2.onDrop accepts view: " + v.getId()
-                + "x, y, xO, yO :" + new Integer(x) + ", " + new Integer(y) + ", "
-                + new Integer(xOffset) + ", " + new Integer(yOffset));
-
-        int w = v.getWidth();
-        int h = v.getHeight();
-        int left = x - xOffset;
-        int top = y - yOffset;
-        onDragLisenter.onDrop(dragView, (View) dragInfo);
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+        onDragLisenter.onStart();
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,

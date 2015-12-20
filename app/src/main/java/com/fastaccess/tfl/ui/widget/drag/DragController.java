@@ -272,7 +272,7 @@ public class DragController {
 
     /**
      * Call this from a drag source view like this:
-     * <p>
+     * <p/>
      * <pre>
      *  @Override
      *  public boolean dispatchKeyEvent(KeyEvent event) {
@@ -456,10 +456,10 @@ public class DragController {
                     (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo)) {
                 dropTarget.onDrop(mDragSource, coordinates[0], coordinates[1],
                         (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                mDragSource.onDropCompleted((View) dropTarget, true);
+                mDragSource.onDropCompleted((View) dropTarget, mDragInfo, true);
                 return true;
             } else {
-                mDragSource.onDropCompleted((View) dropTarget, false);
+                mDragSource.onDropCompleted((View) dropTarget, mDragInfo, false);
                 return true;
             }
         }

@@ -25,7 +25,7 @@ import com.fastaccess.tfl.helper.Logger;
 /**
  * This class describes an area within a DragLayer where a dragged item can be dropped. It is a subclass of MyAbsoluteLayout, which means that it is a
  * ViewGroup and views can be added as child views.
- * <p>
+ * <p/>
  * <p> In the onDrop method, the view dropped is not added as a child view. Instead, the view is repositioned within the DragLayer that contains the
  * DropSpot. If the DropSpot is not associated with a DragLayer, it will not accept dropped objects.
  */
@@ -33,12 +33,10 @@ import com.fastaccess.tfl.helper.Logger;
 public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragController.DragListener {
 
     public interface OnDragLisenter {
-        void onDrop(View v, View where);
+        void onDrop(View v, Object app);
 
         void onStart();
     }
-
-    private OnDragLisenter onDragLisenter;
 
     public DropSpot(Context context) {
         super(context);
@@ -69,19 +67,9 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
 
     public void setDragLayer(DragLayer newValue) {
         mDragLayer = newValue;
-    } // end setDragLayer
-
-    public int getSavedBackground() {
-        //if (mSavedBackground == null) {}
-        return 0;
-    } // end getSavedBackground
-
-    public void setSavedBackground(int newValue) {
-
-    } // end setSavedBackground
+    }
 
     public void onDragStart(DragSource source, Object info, int dragAction) {
-        onDragLisenter.onStart();
         toast("onDragStart");
     }
 
@@ -90,36 +78,8 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        // We need the DragLayer to do the drop.
         if (mDragLayer == null) return;
-
-        // The view being moved is stored in the dragInfo.
-        View v = (View) dragInfo;
-
-        // At some point, it would be nice to get away from use of the clone of deprecated AbsoluteLayout.
-        // That's what DragLayer is defined in terms of.
-
-        // Launcher code and my own DragView moves the DragView this way.
-        // Don't think this is the way.
-        // Go back and study the Launcher code some more. Look at CellLayout.
-    /*
-    WindowManager.LayoutParams lp = mLayoutParams;
-    lp.x = touchX - mRegistrationX;
-    lp.y = touchY - mRegistrationY;
-    mWindowManager.updateViewLayout(this, lp);
-    */
-
-        // For now, take the view and update its position using the DragLayer layout object.
-        // The coordinates given to onDrop are relative to the DropSpot. Add in its x and y location
-        // so the drop occurs where the user expects it.
-        // (At least the fact that the layout is absolute is pretty much hidden from the caller.)
-        int viewX = this.getLeft();
-        int viewY = this.getTop();
-        int w = v.getWidth();
-        int h = v.getHeight();
-        int left = x - xOffset + viewX;
-        int top = y - yOffset + viewY;
-        onDragLisenter.onDrop(v, (View) dragInfo);
+//        onDragLisenter.onDrop(dragView, dragInfo);
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
@@ -131,7 +91,6 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         toast("onDragExit");
-        setBackgroundResource(getSavedBackground());
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
@@ -146,10 +105,9 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
         return (mDragLayer != null);
     } // end getDragLayer
 
-    public void setup(DragLayer layer, DragController controller, OnDragLisenter onDragLisenter) {
+    public void setup(DragLayer layer, DragController controller) {
         mDragLayer = layer;
         mDragController = controller;
-        this.onDragLisenter = onDragLisenter;
         if (controller != null) {
             controller.setDragListener(this);
             controller.addDropTarget(this);

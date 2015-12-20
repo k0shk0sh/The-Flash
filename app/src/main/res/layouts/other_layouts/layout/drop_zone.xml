@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    android:layout_gravity="top|center_horizontal"
+    android:layout_marginBottom="@dimen/spacing_normal"
+    android:layout_marginEnd="@dimen/layout_margin"
+    android:layout_marginLeft="@dimen/layout_margin"
+    android:layout_marginRight="@dimen/layout_margin"
+    android:layout_marginStart="@dimen/layout_margin"
+    android:layout_marginTop="@dimen/spacing_normal"
+    android:background="@color/t_primary"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+    <com.fastaccess.tfl.ui.widget.drag.DropSpot
+        android:id="@+id/uninstallApp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_sLarge"
+            android:paddingLeft="@dimen/spacing_sLarge"
+            android:paddingRight="@dimen/spacing_sLarge"
+            android:paddingStart="@dimen/spacing_sLarge"
+            android:paddingTop="@dimen/spacing_normal">
+
+
+            <com.fastaccess.tfl.ui.widget.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/spacing_micro"
+                android:layout_marginStart="@dimen/spacing_micro"
+                android:drawableLeft="@drawable/ic_clear"
+                android:drawablePadding="@dimen/spacing_sLarge"
+                android:drawableStart="@drawable/ic_clear"
+                android:gravity="center_vertical"
+                android:shadowColor="#000"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                android:text="@string/uninstall"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"/>
+        </LinearLayout>
+    </com.fastaccess.tfl.ui.widget.drag.DropSpot>
+
+    <com.fastaccess.tfl.ui.widget.drag.DropSpot
+        android:id="@+id/appInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_sLarge"
+            android:paddingLeft="@dimen/spacing_sLarge"
+            android:paddingRight="@dimen/spacing_sLarge"
+            android:paddingStart="@dimen/spacing_sLarge"
+            android:paddingTop="@dimen/spacing_normal">
+
+            <com.fastaccess.tfl.ui.widget.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/spacing_micro"
+                android:layout_marginStart="@dimen/spacing_micro"
+                android:drawableLeft="@drawable/ic_clear"
+                android:drawablePadding="@dimen/spacing_sLarge"
+                android:drawableStart="@drawable/ic_info"
+                android:gravity="center_vertical"
+                android:shadowColor="#000"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                android:text="@string/app_info"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"/>
+        </LinearLayout>
+    </com.fastaccess.tfl.ui.widget.drag.DropSpot>
+</LinearLayout>

@@ -24,4 +24,6 @@
     <!-- Permission description -->
     <string name="permdesc_write_settings">Allows the app to change the settings and
         shortcuts in Home.</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="app_info">info</string>
 </resources>

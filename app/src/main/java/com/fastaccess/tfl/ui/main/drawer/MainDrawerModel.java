@@ -21,4 +21,6 @@ public interface MainDrawerModel {
     void onAppRemoved(int position);
 
     void closeDrawer();
+
+    void onDropZone(boolean show);
 }

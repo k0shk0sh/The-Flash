@@ -30,5 +30,5 @@ public interface DragSource {
 
     void setDragController(DragController dragger, DropSpot.OnDragLisenter onDragLisenter);
 
-    void onDropCompleted(View target, boolean success);
+    void onDropCompleted(View target, Object dragInfo, boolean success);
 }

@@ -2,9 +2,8 @@
 <com.fastaccess.tfl.ui.widget.drag.DropSpot
     android:id="@+id/dropSpot"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:focusable="true"
     android:orientation="vertical">
 
@@ -65,6 +64,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:gravity="center"
-            tools:text="AppName"/>
+            android:text="AppName"/>
     </LinearLayout>
 </com.fastaccess.tfl.ui.widget.drag.DropSpot>

@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.fastaccess.tfl.R;
 import com.fastaccess.tfl.apps.AppsAdapter;
 import com.fastaccess.tfl.apps.AppsLoader;
 import com.fastaccess.tfl.apps.AppsModel;
-import com.fastaccess.tfl.helper.Logger;
+import com.fastaccess.tfl.helper.AppHelper;
+import com.fastaccess.tfl.ui.main.MainActivity;
 import com.fastaccess.tfl.ui.widget.drag.DragController;
 import com.fastaccess.tfl.ui.widget.drag.DropSpot;
 
@@ -25,11 +27,13 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
 
     private final MainDrawerModel mainDrawerModel;
     private final DragController dragController;
+    private final MainActivity context;
 
     private MainDrawerPresenter(MainDrawerModel mainDrawerModel) {
         this.mainDrawerModel = mainDrawerModel;
-        mainDrawerModel.getContext().getLoaderManager().initLoader(1, null, this);
-        dragController = new DragController(mainDrawerModel.getContext());
+        this.context = mainDrawerModel.getContext();
+        context.getLoaderManager().initLoader(1, null, this);
+        dragController = new DragController(context);
     }
 
     public static MainDrawerPresenter with(MainDrawerModel mainDrawerModel) {
@@ -38,7 +42,7 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
 
     @Override public Loader<List<AppsModel>> onCreateLoader(int id, Bundle args) {
         mainDrawerModel.onStartLoading();
-        return new AppsLoader(mainDrawerModel.getContext());
+        return new AppsLoader(context);
     }
 
     @Override public void onLoadFinished(Loader<List<AppsModel>> loader, List<AppsModel> data) {
@@ -51,11 +55,11 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
 
     @Override public void onAppClick(AppsModel model) {
         try {
-            PackageManager manager = mainDrawerModel.getContext().getPackageManager();
+            PackageManager manager = context.getPackageManager();
             Intent intent = manager.getLaunchIntentForPackage(model.getPackageName());
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            mainDrawerModel.getContext().startActivity(intent);
-            model.updateEntry(model.getPackageName());
+            context.startActivity(intent);
+            AppsModel.updateEntry(model.getPackageName());
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(mainDrawerModel.getContext(), "App Not Found", Toast.LENGTH_SHORT).show();
@@ -63,7 +67,7 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
     }
 
     @Override public void onLongClick(AppsModel model, int position, View v) {
-        dragController.startDrag(v, mainDrawerModel.getContext().getMainLayout(), v, DragController.DRAG_ACTION_MOVE);
+        dragController.startDrag(v, context.getMainLayout(), model, DragController.DRAG_ACTION_MOVE);
 
 //        dragController.startDrag(v, mDragLayer, model, DragController.DRAG_ACTION_MOVE);
 //        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
@@ -83,11 +87,19 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
         return dragController;
     }
 
-    @Override public void onDrop(View v, View where) {
-        Logger.e(v.getClass().getSimpleName() + "||" + where.getClass().getSimpleName());
+    @Override public void onDrop(View v, Object object) {
+        if (!(object instanceof AppsModel)) return;
+        AppsModel model = (AppsModel) object;
+        mainDrawerModel.onDropZone(false);
+        if (v.getId() == R.id.uninstallApp) {
+            AppHelper.uninstallApp(context, model.getPackageName());
+        } else if (v.getId() == R.id.appInfo) {
+            AppHelper.openAppInfo(context, model.getPackageName());
+        }
     }
 
     @Override public void onStart() {
         mainDrawerModel.closeDrawer();
+        mainDrawerModel.onDropZone(true);
     }
 }
