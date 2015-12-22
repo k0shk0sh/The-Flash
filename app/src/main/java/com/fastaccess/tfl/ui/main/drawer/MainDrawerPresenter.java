@@ -68,19 +68,6 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
 
     @Override public void onLongClick(AppsModel model, int position, View v) {
         dragController.startDrag(v, context.getMainLayout(), model, DragController.DRAG_ACTION_MOVE);
-
-//        dragController.startDrag(v, mDragLayer, model, DragController.DRAG_ACTION_MOVE);
-//        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-//        popupMenu.inflate(R.menu.cab_delete_wallpapers);
-//        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            @Override public boolean onMenuItemClick(MenuItem item) {
-//                if (item.getItemId() == R.id.menu_delete) {
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//        popupMenu.show();
     }
 
     public DragController getDragController() {

@@ -78,11 +78,12 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     @Bind(R.id.uninstallApp) DropSpot uninstallApp;
     @State int hiddenCount;
 
-    @OnTouch(R.id.mainLayout) public boolean onGesture(MotionEvent e) {
+    @OnTouch(R.id.touchLayout) public boolean onGesture(MotionEvent e) {
         return gestureDetector.onTouchEvent(e);
     }
 
     @OnClick(R.id.openDrawer) void onOpenAppDrawer() {
+        AnimUtil.circularReveal(appBar, appBar.getVisibility() == View.INVISIBLE);
         AnimUtil.circularRevealFromBottom(appsDrawer, openDrawer, appsDrawer.getVisibility() == View.INVISIBLE);
     }
 
@@ -150,6 +151,9 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         }
         if (appsDrawer.isShown()) {
             AnimUtil.circularRevealFromBottom(appsDrawer, false);
+        }
+        if (appBar.isShown()) {
+            AnimUtil.circularReveal(appBar, false);
         }
     }
 

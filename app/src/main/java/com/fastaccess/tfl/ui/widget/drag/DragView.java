@@ -51,6 +51,10 @@ public class DragView extends View {
     private WindowManager.LayoutParams mLayoutParams;
     private WindowManager mWindowManager;
 
+    public DragView(Context context) {
+        super(context);
+    }
+
     /**
      * Construct the drag view.
      * <p>
@@ -67,7 +71,6 @@ public class DragView extends View {
      */
     public DragView(Context context, Bitmap bitmap, int registrationX, int registrationY, int left, int top, int width, int height) {
         super(context);
-
         // mWindowManager = WindowManagerImpl.getDefault();
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 

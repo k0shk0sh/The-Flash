@@ -155,11 +155,8 @@ public class DragController {
         // Start dragging, but only if the source has something to drag.
         boolean doDrag = source.allowDrag();
         if (!doDrag) return;
-
         mOriginator = v;
-
         Bitmap b = getViewBitmap(v);
-
         if (b == null) {
             // out of memory?
             return;
@@ -169,9 +166,7 @@ public class DragController {
         int screenX = loc[0];
         int screenY = loc[1];
         startDrag(b, screenX, screenY, 0, 0, b.getWidth(), b.getHeight(), source, dragInfo, dragAction);
-
         b.recycle();
-
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
         }

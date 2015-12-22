@@ -47,7 +47,6 @@ public class Logger {
         Log.e(TAG, text + "", e);//avoid null
     }
 
-
     public static void d(@Nullable String text) {
         Log.d(TAG, text + "");//avoid null
     }
@@ -56,15 +55,15 @@ public class Logger {
         Log.i(TAG, text + "");//avoid null
     }
 
-    public static void e(@Nullable int text) {
+    public static void e(int text) {
         Log.e(TAG, text + "");//avoid null
     }
 
-    public static void d(@Nullable int text) {
+    public static void d(int text) {
         Log.d(TAG, text + "");//avoid null
     }
 
-    public static void i(@Nullable int text) {
+    public static void i(int text) {
         Log.i(TAG, text + "");//avoid null
     }
 }
