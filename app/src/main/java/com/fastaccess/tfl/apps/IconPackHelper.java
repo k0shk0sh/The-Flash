@@ -1,9 +1,5 @@
 package com.fastaccess.tfl.apps;
 
-/**
- * Created by Kosh on 9/5/2015. copyrights are reserved
- */
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -19,16 +15,9 @@ import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fastaccess.tfl.R;
+import com.fastaccess.tfl.helper.PrefHelper;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +52,6 @@ public class IconPackHelper {
             "com.teslacoilsw.launcher.THEME"
     };
     private static final int PICK_ICON = 10001;
-
-    // Holds package/class -> drawable
     private Map<String, String> mIconPackResources;
     private final Context mContext;
     private String mLoadedIconPackName;
@@ -386,7 +371,7 @@ public class IconPackHelper {
             return;
         }
         builder.setTitle("Choose Theme Pack");
-        final IconAdapter adapter = new IconAdapter(context, supportedPackages);
+        final IconPackAdapter adapter = new IconPackAdapter(context, supportedPackages);
         if (!pickIcon) {
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int position) {
@@ -394,13 +379,8 @@ public class IconPackHelper {
                         return;
                     }
                     String selectedPackage = adapter.getItem(position);
-//                    AppHelper.putIconPack(context, selectedPackage);
-//                    AppController.getController().getIconCache(false).flush();
-//                    Intent intent = new Intent(ApplicationsReceiver.DATA_CHANGED);
-//                    Intent intent1 = new Intent(MyAppsReceiver.DATA_ADDED);
-//                    AppController.getController().sendBroadcast(intent);
-//                    AppController.getController().sendBroadcast(intent1);
-                    if (context != null && context != null) context.onBackPressed();
+                    PrefHelper.set(THEME_PREF, selectedPackage);
+                    if (context != null) context.onBackPressed();
                 }
             }).setPositiveButton("Get Themes", new DialogInterface.OnClickListener() {
                 @Override
@@ -460,7 +440,7 @@ public class IconPackHelper {
         return getResourceIdForDrawable(drawable);
     }
 
-    static class IconPackInfo {
+    public static class IconPackInfo {
         String packageName;
         CharSequence label;
         Drawable icon;
@@ -481,66 +461,5 @@ public class IconPackHelper {
         }
     }
 
-    private static class IconAdapter extends BaseAdapter {
-        ArrayList<IconPackInfo> mSupportedPackages;
-        LayoutInflater mLayoutInflater;
-        String mCurrentIconPack;
-        int mCurrentIconPackPosition = -1;
-
-        IconAdapter(Context ctx, Map<String, IconPackInfo> supportedPackages) {
-            mLayoutInflater = LayoutInflater.from(ctx);
-            mSupportedPackages = new ArrayList<IconPackInfo>(supportedPackages.values());
-            Collections.sort(mSupportedPackages, new Comparator<IconPackInfo>() {
-                @Override
-                public int compare(IconPackInfo lhs, IconPackInfo rhs) {
-                    return lhs.label.toString().compareToIgnoreCase(rhs.label.toString());
-                }
-            });
-
-            Resources res = ctx.getResources();
-            String defaultLabel = "Default Theme";
-            Drawable icon = res.getDrawable(R.mipmap.ic_launcher);
-            mSupportedPackages.add(0, new IconPackInfo(defaultLabel, icon, ""));
-            mCurrentIconPack = "Default";
-        }
-
-        @Override
-        public int getCount() {
-            return mSupportedPackages.size();
-        }
-
-        @Override
-        public String getItem(int position) {
-            return (String) mSupportedPackages.get(position).packageName;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        public boolean isCurrentIconPack(int position) {
-            return mCurrentIconPackPosition == position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = mLayoutInflater.inflate(R.layout.icon_pack_layout, null);
-            }
-            IconPackInfo info = mSupportedPackages.get(position);
-            TextView txtView = (TextView) convertView.findViewById(R.id.title);
-            txtView.setText(info.label);
-            ImageView imgView = (ImageView) convertView.findViewById(R.id.icon);
-            imgView.setImageDrawable(info.icon);
-            RadioButton radioButton = (RadioButton) convertView.findViewById(R.id.radio);
-            boolean isCurrentIconPack = info.packageName.equals(mCurrentIconPack);
-            radioButton.setChecked(isCurrentIconPack);
-            if (isCurrentIconPack) {
-                mCurrentIconPackPosition = position;
-            }
-            return convertView;
-        }
-    }
 
 }

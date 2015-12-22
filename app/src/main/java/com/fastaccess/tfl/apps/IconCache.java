@@ -48,9 +48,6 @@ import java.util.HashMap;
  * Cache of application icons.  Icons can be made from any thread.
  */
 public class IconCache {
-    @SuppressWarnings("unused")
-    private static final String TAG = "Launcher.IconCache";
-
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
     private static class CacheEntry {
@@ -78,9 +75,6 @@ public class IconCache {
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG, Paint.FILTER_BITMAP_FLAG));
     }
-
-    static int sColors[] = {0xffff0000, 0xff00ff00, 0xff0000ff};
-    static int sColorIndex = 0;
 
     public IconCache(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -178,27 +172,18 @@ public class IconCache {
         return b;
     }
 
-    /**
-     * Remove any records for the supplied ComponentName.
-     */
     public void remove(ComponentName componentName) {
         synchronized (mCache) {
             mCache.remove(componentName);
         }
     }
 
-    /**
-     * Empty out the cache.
-     */
     public void flush() {
         synchronized (mCache) {
             mCache.clear();
         }
     }
 
-    /**
-     * Fill in "application" with the icon and label for "info."
-     */
     public void getTitleAndIcon(AppsModel application, ResolveInfo info, HashMap<Object, CharSequence> labelCache) {
         synchronized (mCache) {
             CacheEntry entry = cacheLocked(application.getComponentName(), info, labelCache);
@@ -306,9 +291,6 @@ public class IconCache {
         }
     }
 
-    /**
-     * Returns a bitmap suitable for the all apps view.
-     */
     static Bitmap createIconBitmap(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {

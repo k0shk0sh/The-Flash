@@ -24,10 +24,6 @@ import java.util.List;
 @Table(name = "AppsModel", id = BaseColumns._ID)
 public class AppsModel extends Model {
 
-    public enum ItemType {
-        FOLDER, APP
-    }
-
     @Column @Expose private String appName;
     @Column(unique = true, onUniqueConflicts = Column.ConflictAction.IGNORE, onUniqueConflict = Column.ConflictAction.IGNORE)
     @Expose private String packageName;
@@ -35,7 +31,6 @@ public class AppsModel extends Model {
     @Column @Expose private String activityInfoName;
     @Column @Expose private int appPosition;
     @Column @Expose private int countEntry;
-    @Column ItemType itemType = ItemType.APP;
     @Column boolean isHidden;
     private List<FolderModel> folderModels;
     private Bitmap bitmap;
@@ -149,14 +144,6 @@ public class AppsModel extends Model {
 
     public void setCountEntry(int countEntry) {
         this.countEntry = countEntry;
-    }
-
-    public ItemType getItemType() {
-        return itemType;
-    }
-
-    public void setItemType(ItemType itemType) {
-        this.itemType = itemType;
     }
 
     public List<FolderModel> getFolderModels() {

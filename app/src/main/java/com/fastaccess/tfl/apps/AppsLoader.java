@@ -1,6 +1,5 @@
 package com.fastaccess.tfl.apps;
 
-
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
@@ -15,11 +14,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
-    private static final String TAG = "AppsLoader";
     private ApplicationsReceiver mAppsObserver;
     private final PackageManager mPm;
     private List<AppsModel> mApps;
@@ -31,12 +28,7 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
         mIconCache = AppController.getApp().getIconCache();
     }
 
-    @Override
-    public List<AppsModel> loadInBackground() {
-//        List<AppsModel> existing = AppsModel.getAll();
-//        if (existing != null && !existing.isEmpty()) {
-//            return existing;
-//        }
+    @Override public List<AppsModel> loadInBackground() {
         try {
             List<AppsModel> entries = new ArrayList<AppsModel>();
             Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -61,14 +53,13 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
                 }
             }
             return entries;
-        } catch (Exception e) {
+        } catch (Exception e) {//transaction is too large????.
             e.printStackTrace();
-            return getInstalledPackages(getContext(), mIconCache);
         }
+        return getInstalledPackages(getContext(), mIconCache);
     }
 
-    @Override
-    public void deliverResult(List<AppsModel> apps) {
+    @Override public void deliverResult(List<AppsModel> apps) {
         if (isReset()) {
             if (apps != null) {
                 return;
@@ -81,8 +72,7 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
         }
     }
 
-    @Override
-    protected void onStartLoading() {
+    @Override protected void onStartLoading() {
         if (mApps != null) {
             deliverResult(mApps);
         }
@@ -100,13 +90,11 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
 
     }
 
-    @Override
-    protected void onStopLoading() {
+    @Override protected void onStopLoading() {
         cancelLoad();
     }
 
-    @Override
-    protected void onReset() {
+    @Override protected void onReset() {
         onStopLoading();
         if (mApps != null) {
             mApps = null;
@@ -117,22 +105,13 @@ public class AppsLoader extends AsyncTaskLoader<List<AppsModel>> {
         }
     }
 
-    @Override
-    public void onCanceled(List<AppsModel> apps) {
+    @Override public void onCanceled(List<AppsModel> apps) {
         super.onCanceled(apps);
     }
 
-    @Override
-    public void forceLoad() {
+    @Override public void forceLoad() {
         super.forceLoad();
     }
-
-    private Comparator<PackageInfo> sortApps = new Comparator<PackageInfo>() {
-        @Override
-        public int compare(PackageInfo one, PackageInfo two) {
-            return one.applicationInfo.loadLabel(mPm).toString().compareTo(two.applicationInfo.loadLabel(mPm).toString());
-        }
-    };
 
     public static List<AppsModel> getInstalledPackages(Context context, IconCache iconCache) {
         final PackageManager pm = context.getPackageManager();
