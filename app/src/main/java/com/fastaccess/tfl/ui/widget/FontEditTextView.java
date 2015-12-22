@@ -44,8 +44,7 @@ public class FontEditTextView extends AppCompatEditText {
         setTextColor(ViewHelper.textSelector(nColor, pColor));
     }
 
-    @Override
-    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+    @Override public boolean onKeyPreIme(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mainDrawerModel != null) {
                 mainDrawerModel.onKeyboardHidden();

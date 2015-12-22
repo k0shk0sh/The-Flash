@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.fastaccess.tfl.ui.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -33,34 +30,21 @@ import android.view.ViewConfiguration;
 import com.fastaccess.tfl.apps.AppsModel;
 import com.fastaccess.tfl.ui.wallpaper.Utilities;
 
-/**
- * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan because we want to make the bubble taller than the text and
- * TextView's clip is too aggressive.
- */
 public class BubbleTextView extends FontTextView {
-
-    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<>(2);
-
     public static final float SHADOW_LARGE_RADIUS = 4.0f;
     public static final float SHADOW_SMALL_RADIUS = 1.75f;
     public static final float SHADOW_Y_OFFSET = 2.0f;
     public static final int SHADOW_LARGE_COLOUR = 0xDD000000;
     public static final int SHADOW_SMALL_COLOUR = 0xCC000000;
     static final float PADDING_V = 3.0f;
-
     private HolographicOutlineHelper mOutlineHelper;
     private Bitmap mPressedBackground;
-
     private float mSlop;
-
     private int mTextColor;
     private final boolean mCustomShadowsEnabled = false;
     private boolean mIsTextVisible;
-
-
     private boolean mBackgroundSizeChanged;
     private final Drawable mBackground;
-
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
     private CheckLongPressHelper mLongPressHelper;
@@ -79,41 +63,22 @@ public class BubbleTextView extends FontTextView {
         init();
     }
 
-    private void init() {
-        mLongPressHelper = new CheckLongPressHelper(this);
-        mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
-        if (mCustomShadowsEnabled) {
-            setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
-        }
-    }
-
-    public void applyFromApplicationInfo(AppsModel info) {
-        Drawable topDrawable = Utilities.createIconDrawable(info.getBitmap());
-        setCompoundDrawables(null, topDrawable, null, null);
-        setText(info.getAppName());
-        setTag(info);
-    }
-
-    @Override
-    protected boolean setFrame(int left, int top, int right, int bottom) {
+    @Override protected boolean setFrame(int left, int top, int right, int bottom) {
         if (getLeft() != left || getRight() != right || getTop() != top || getBottom() != bottom) {
             mBackgroundSizeChanged = true;
         }
         return super.setFrame(left, top, right, bottom);
     }
 
-    @Override
-    protected boolean verifyDrawable(Drawable who) {
+    @Override protected boolean verifyDrawable(Drawable who) {
         return who == mBackground || super.verifyDrawable(who);
     }
 
-    @Override
-    public void setTag(Object tag) {
+    @Override public void setTag(Object tag) {
         super.setTag(tag);
     }
 
-    @Override
-    public void setPressed(boolean pressed) {
+    @Override public void setPressed(boolean pressed) {
         super.setPressed(pressed);
 
         if (!mIgnorePressedStateChange) {
@@ -121,15 +86,7 @@ public class BubbleTextView extends FontTextView {
         }
     }
 
-    private void updateIconState() {
-        Drawable top = getCompoundDrawables()[1];
-        if (top instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) top).setPressed(isPressed() || mStayPressed);
-        }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    @Override public boolean onTouchEvent(MotionEvent event) {
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
@@ -164,21 +121,7 @@ public class BubbleTextView extends FontTextView {
         return result;
     }
 
-    public void setStayPressed(boolean stayPressed) {
-        mStayPressed = stayPressed;
-        if (!stayPressed) {
-            mPressedBackground = null;
-        }
-        updateIconState();
-    }
-
-    public void clearPressedBackground() {
-        setPressed(false);
-        setStayPressed(false);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (super.onKeyDown(keyCode, event)) {
             // Pre-create shadow so show immediately on click.
             if (mPressedBackground == null) {
@@ -189,8 +132,7 @@ public class BubbleTextView extends FontTextView {
         return false;
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    @Override public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Unlike touch events, keypress event propagate pressed state change immediately,
         // without waiting for onClickHandler to execute. Disable pressed state changes here
         // to avoid flickering.
@@ -203,8 +145,7 @@ public class BubbleTextView extends FontTextView {
         return result;
     }
 
-    @Override
-    public void draw(Canvas canvas) {
+    @Override public void draw(Canvas canvas) {
         if (!mCustomShadowsEnabled) {
             super.draw(canvas);
             return;
@@ -248,29 +189,50 @@ public class BubbleTextView extends FontTextView {
         canvas.restore();
     }
 
-    @Override
-    protected void onAttachedToWindow() {
+    @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mBackground != null) mBackground.setCallback(this);
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
+    @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (mBackground != null) mBackground.setCallback(null);
     }
 
-    @Override
-    public void setTextColor(int color) {
+    @Override public void setTextColor(int color) {
         mTextColor = color;
         super.setTextColor(color);
     }
 
-    @Override
-    public void setTextColor(ColorStateList colors) {
+    @Override public void setTextColor(ColorStateList colors) {
         mTextColor = colors.getDefaultColor();
         super.setTextColor(colors);
+    }
+
+    @Override protected boolean onSetAlpha(int alpha) {
+        return true;
+    }
+
+    @Override public void cancelLongPress() {
+        super.cancelLongPress();
+
+        mLongPressHelper.cancelLongPress();
+    }
+
+    private void init() {
+        mLongPressHelper = new CheckLongPressHelper(this);
+        mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
+        if (mCustomShadowsEnabled) {
+            setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        }
+    }
+
+    public void applyFromApplicationInfo(AppsModel info) {
+        Drawable topDrawable = Utilities.createIconDrawable(info.getBitmap());
+        setCompoundDrawables(null, topDrawable, null, null);
+        setText(info.getAppName());
+        setTag(info);
     }
 
     public void setTextVisibility(boolean visible) {
@@ -287,15 +249,24 @@ public class BubbleTextView extends FontTextView {
         return mIsTextVisible;
     }
 
-    @Override
-    protected boolean onSetAlpha(int alpha) {
-        return true;
+    public void setStayPressed(boolean stayPressed) {
+        mStayPressed = stayPressed;
+        if (!stayPressed) {
+            mPressedBackground = null;
+        }
+        updateIconState();
     }
 
-    @Override
-    public void cancelLongPress() {
-        super.cancelLongPress();
-
-        mLongPressHelper.cancelLongPress();
+    public void clearPressedBackground() {
+        setPressed(false);
+        setStayPressed(false);
     }
+
+    private void updateIconState() {
+        Drawable top = getCompoundDrawables()[1];
+        if (top instanceof FastBitmapDrawable) {
+            ((FastBitmapDrawable) top).setPressed(isPressed() || mStayPressed);
+        }
+    }
+
 }

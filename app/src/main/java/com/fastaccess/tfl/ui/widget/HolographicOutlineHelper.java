@@ -30,22 +30,15 @@ import android.graphics.Region.Op;
 public class HolographicOutlineHelper {
 
     private static final Rect sTempRect = new Rect();
-
     private final Canvas mCanvas = new Canvas();
     private final Paint mDrawPaint = new Paint();
     private final Paint mBlurPaint = new Paint();
     private final Paint mErasePaint = new Paint();
-
     private final BlurMaskFilter mMediumOuterBlurMaskFilter;
     private final BlurMaskFilter mThinOuterBlurMaskFilter;
     private final BlurMaskFilter mMediumInnerBlurMaskFilter;
-
     private final BlurMaskFilter mShaowBlurMaskFilter;
     private final int mShadowOffset;
-
-    /**
-     * Padding used when creating shadow bitmap;
-     */
     final int shadowBitmapPadding;
 
     static HolographicOutlineHelper INSTANCE;
@@ -79,13 +72,11 @@ public class HolographicOutlineHelper {
     /**
      * Applies a more expensive and accurate outline to whatever is currently drawn in a specified bitmap.
      */
-    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
-                                       int outlineColor) {
+    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color, int outlineColor) {
         applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, true);
     }
 
-    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
-                                       int outlineColor, boolean clipAlpha) {
+    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color, int outlineColor, boolean clipAlpha) {
 
         // We start by removing most of the alpha channel so as to ignore shadows, and
         // other types of partial transparency when defining the shape of the object

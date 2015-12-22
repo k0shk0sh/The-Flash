@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.fastaccess.tfl.ui.widget.drag;
 
 import android.content.Context;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
  * This class is used to initiate a drag within a view or across multiple views. When a drag starts it creates a special view (a DragView) that moves
  * around the screen until the user ends the drag. As feedback to the user, this object causes the device to vibrate as the drag begins.
  */
-
 public class DragController {
     private static final String TAG = "DragController";
 
@@ -196,9 +194,8 @@ public class DragController {
      * @param dragAction
      *         The drag action: either {@link #DRAG_ACTION_MOVE} or {@link #DRAG_ACTION_COPY}
      */
-    public void startDrag(Bitmap b, int screenX, int screenY,
-                          int textureLeft, int textureTop, int textureWidth, int textureHeight,
-                          DragSource source, Object dragInfo, int dragAction) {
+    public void startDrag(Bitmap b, int screenX, int screenY, int textureLeft, int textureTop, int textureWidth, int textureHeight, DragSource
+            source, Object dragInfo, int dragAction) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -267,7 +264,7 @@ public class DragController {
 
     /**
      * Call this from a drag source view like this:
-     * <p/>
+     * <p>
      * <pre>
      *  @Override
      *  public boolean dispatchKeyEvent(KeyEvent event) {

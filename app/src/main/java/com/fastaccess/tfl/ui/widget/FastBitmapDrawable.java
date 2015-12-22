@@ -48,7 +48,6 @@ public class FastBitmapDrawable extends Drawable {
         }
     };
     static final long CLICK_FEEDBACK_DURATION = 2000;
-
     private static final int PRESSED_BRIGHTNESS = 100;
     private static ColorMatrix sGhostModeMatrix;
     private static final ColorMatrix sTempMatrix = new ColorMatrix();
@@ -58,16 +57,12 @@ public class FastBitmapDrawable extends Drawable {
      */
     private static final SparseArray<ColorFilter> sCachedBrightnessFilter =
             new SparseArray<ColorFilter>();
-
     private static final int GHOST_MODE_MIN_COLOR_RANGE = 130;
-
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     private final Bitmap mBitmap;
     private int mAlpha;
-
     private int mBrightness = 0;
     private boolean mGhostModeEnabled = false;
-
     private boolean mPressed = false;
     private ObjectAnimator mPressedAnimator;
 
@@ -77,41 +72,31 @@ public class FastBitmapDrawable extends Drawable {
         setBounds(0, 0, b.getWidth(), b.getHeight());
     }
 
-    @Override
-    public void draw(Canvas canvas) {
+    @Override public void draw(Canvas canvas) {
         final Rect r = getBounds();
         // Draw the bitmap into the bounding rect
         canvas.drawBitmap(mBitmap, null, r, mPaint);
     }
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
+    @Override public void setColorFilter(ColorFilter cf) {
         // No op
     }
 
-    @Override
-    public int getOpacity() {
+    @Override public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
     }
 
-    @Override
-    public void setAlpha(int alpha) {
+    @Override public void setAlpha(int alpha) {
         mAlpha = alpha;
         mPaint.setAlpha(alpha);
     }
 
-    @Override
-    public void setFilterBitmap(boolean filterBitmap) {
+    @Override public void setFilterBitmap(boolean filterBitmap) {
         mPaint.setFilterBitmap(filterBitmap);
         mPaint.setAntiAlias(filterBitmap);
     }
 
-    public int getAlpha() {
-        return mAlpha;
-    }
-
-    @Override
-    public int getIntrinsicWidth() {
+    @Override public int getIntrinsicWidth() {
         int width = getBounds().width();
         if (width == 0) {
             width = mBitmap.getWidth();
@@ -119,8 +104,7 @@ public class FastBitmapDrawable extends Drawable {
         return width;
     }
 
-    @Override
-    public int getIntrinsicHeight() {
+    @Override public int getIntrinsicHeight() {
         int height = getBounds().height();
         if (height == 0) {
             height = mBitmap.getHeight();
@@ -128,23 +112,22 @@ public class FastBitmapDrawable extends Drawable {
         return height;
     }
 
-    @Override
-    public int getMinimumWidth() {
+    @Override public int getMinimumWidth() {
         return getBounds().width();
     }
 
-    @Override
-    public int getMinimumHeight() {
+    @Override public int getMinimumHeight() {
         return getBounds().height();
+    }
+
+    public int getAlpha() {
+        return mAlpha;
     }
 
     public Bitmap getBitmap() {
         return mBitmap;
     }
 
-    /**
-     * When enabled, the icon is grayed out and the contrast is increased to give it a 'ghost' appearance.
-     */
     public void setGhostModeEnabled(boolean enabled) {
         if (mGhostModeEnabled != enabled) {
             mGhostModeEnabled = enabled;

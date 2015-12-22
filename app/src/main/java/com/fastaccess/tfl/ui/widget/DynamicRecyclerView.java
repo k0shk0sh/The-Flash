@@ -61,8 +61,7 @@ public class DynamicRecyclerView extends RecyclerView {
 
     }
 
-    @Override
-    public void setAdapter(Adapter adapter) {
+    @Override public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         if (adapter != null) {
             adapter.registerAdapterDataObserver(observer);

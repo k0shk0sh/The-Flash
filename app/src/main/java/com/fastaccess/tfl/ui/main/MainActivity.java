@@ -45,6 +45,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import butterknife.OnTextChanged;
 import butterknife.OnTouch;
 import de.greenrobot.event.EventBus;
@@ -71,12 +72,16 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     @Bind(R.id.appsDrawer) View appsDrawer;
     @Bind(R.id.footer) View footer;
     @Bind(R.id.progress) CircularFillableLoaders progress;
-    @Bind(R.id.dropSpot) DropSpot dropSpot;
+    @Bind(R.id.folderLayout) DropSpot folderLayout;
     @Bind(R.id.mainLayout) DragLayer mainLayout;
     @Bind(R.id.dropLayout) View dropZone;
     @Bind(R.id.appInfo) DropSpot appInfo;
     @Bind(R.id.uninstallApp) DropSpot uninstallApp;
     @State int hiddenCount;
+
+    @OnLongClick(value = {R.id.folderLayout}) boolean onFolderLongPress() {
+        return true;
+    }
 
     @OnTouch(R.id.touchLayout) public boolean onGesture(MotionEvent e) {
         return gestureDetector.onTouchEvent(e);
@@ -136,7 +141,7 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
         initWallpaper();
         mainLayout.setDragController(presenter.getDragController(), presenter);
         getPresenter().getDragController().addDropTarget(mainLayout);
-        dropSpot.setup(mainLayout, presenter.getDragController());
+        folderLayout.setup(mainLayout, presenter.getDragController());
         uninstallApp.setup(mainLayout, presenter.getDragController());
         appInfo.setup(mainLayout, presenter.getDragController());
         searchText.setMainDrawerModel(this);
@@ -199,11 +204,11 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
     }
 
     @Override public void closeDrawer() {
+        AnimUtil.circularReveal(appBar, false);
         AnimUtil.circularRevealFromBottom(appsDrawer, false);
     }
 
     @Override public void onDropZone(boolean show) {
-        ViewHelper.animateVisibility(!show, appBar);
         ViewHelper.animateVisibility(show, dropZone);
     }
 
@@ -212,6 +217,10 @@ public class MainActivity extends BaseActivity implements OnNavigationItemSelect
             onCancel();
         }
         hiddenCount++;
+    }
+
+    @Override public void onDropOnFolder(AppsModel model, int folderId) {
+        Logger.e("AppName: " + model.getAppName() + " " + folderId);
     }
 
     @Override public void onAppSelected(AppsModel model) {

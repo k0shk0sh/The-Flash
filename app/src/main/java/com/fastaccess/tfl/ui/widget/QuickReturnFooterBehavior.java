@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.Interpolator;
 
-/**
- * Created by Kosh on 28/11/15 10:24 PM. copyrights @ Innov8tif
- */
 public class QuickReturnFooterBehavior extends CoordinatorLayout.Behavior<View> {
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
 
@@ -30,8 +27,7 @@ public class QuickReturnFooterBehavior extends CoordinatorLayout.Behavior<View> 
         return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
 
-    @Override
-    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dx, int dy, int[] consumed) {
+    @Override public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dx, int dy, int[] consumed) {
         if (dy > 0 && mDySinceDirectionChange < 0 || dy < 0 && mDySinceDirectionChange > 0) {
             child.animate().cancel();
             mDySinceDirectionChange = 0;
@@ -46,15 +42,6 @@ public class QuickReturnFooterBehavior extends CoordinatorLayout.Behavior<View> 
         }
     }
 
-    /**
-     * Hide the quick return view.
-     * <p/>
-     * Animates hiding the view, with the view sliding down and out of the screen. After the view has disappeared, its visibility will change to
-     * GONE.
-     *
-     * @param view
-     *         The quick return view
-     */
     private void hide(final View view) {
         mIsHiding = true;
         ViewPropertyAnimator animator = view.animate()
@@ -87,15 +74,6 @@ public class QuickReturnFooterBehavior extends CoordinatorLayout.Behavior<View> 
         animator.start();
     }
 
-    /**
-     * Show the quick return view.
-     * <p/>
-     * Animates showing the view, with the view sliding up from the bottom of the screen. After the view has reappeared, its visibility will change to
-     * VISIBLE.
-     *
-     * @param view
-     *         The quick return view
-     */
     private void show(final View view) {
         mIsShowing = true;
         ViewPropertyAnimator animator = view.animate()

@@ -14,6 +14,34 @@
     android:orientation="horizontal"
     android:visibility="visible">
 
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <include
+        layout="@layout/folder_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
     <Button
         android:id="@+id/openDrawer"
         style="@style/WorkspaceIcon"
@@ -21,37 +49,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:drawablePadding="@dimen/spacing_micro"
         android:background="@color/transparent"
+        android:drawablePadding="@dimen/spacing_micro"
         android:drawableTop="@drawable/all_apps_button_icon"
         android:text="Apps"/>
-
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"/>
-
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"/>
-
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"/>
-
-    <include
-        layout="@layout/folder_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"/>
-
 </LinearLayout>

@@ -1,19 +1,4 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.fastaccess.tfl.ui.widget.drag;
-
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -22,15 +7,7 @@ import android.view.View;
 
 import com.fastaccess.tfl.R;
 
-/**
- * This class describes an area within a DragLayer where a dragged item can be dropped. It is a subclass of MyAbsoluteLayout, which means that it is a
- * ViewGroup and views can be added as child views.
- * <p/>
- * <p> In the onDrop method, the view dropped is not added as a child view. Instead, the view is repositioned within the DragLayer that contains the
- * DropSpot. If the DropSpot is not associated with a DragLayer, it will not accept dropped objects.
- */
-
-public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragController.DragListener {
+public class DropSpot extends WorkspaceLayout implements DropTarget, DragController.DragListener {
 
     public interface OnDragListener {
         void onDrop(View v, Object app, boolean success);
@@ -39,6 +16,9 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
 
         void onEnd();
     }
+
+    private DragController mDragController;
+    private DragLayer mDragLayer;
 
     public DropSpot(Context context) {
         super(context);
@@ -52,56 +32,58 @@ public class DropSpot extends MyAbsoluteLayout implements DropTarget, DragContro
         super(context, attrs, style);
     }
 
-    private DragController mDragController;
-    private DragLayer mDragLayer;
+    @Override public void onDragStart(DragSource source, Object info, int dragAction) {
 
-    public DragController getDragController() {
-        return mDragController;
-    } // end getDragController
-
-    public void setDragController(DragController newValue) {
-        mDragController = newValue;
-    } // end setDragController
-
-    public DragLayer getDragLayer() {
-        return mDragLayer;
-    } // end getDragLayer
-
-    public void setDragLayer(DragLayer newValue) {
-        mDragLayer = newValue;
     }
 
-    public void onDragStart(DragSource source, Object info, int dragAction) {
+    @Override public void onDragEnd() {
+
     }
 
-    public void onDragEnd() {
+    @Override public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-//        onDragLisenter.onDrop(dragView, dragInfo);
+    @Override public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {}
-
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+    @Override public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         setBackgroundResource(R.drawable.folder_bg);
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+    @Override public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         setBackgroundResource(0);
     }
 
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+    @Override public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         return isEnabled();
     }
 
+    @Override
     public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset, DragView dragView, Object dragInfo, Rect recycle) {
         return null;
     }
 
-    public boolean isEnabled() {
+    @Override public boolean isEnabled() {
         return (mDragLayer != null);
-    } // end getDragLayer
+    }
+
+    public DragController getDragController() {
+        return mDragController;
+    }
+
+    public void setDragController(DragController newValue) {
+        mDragController = newValue;
+    }
+
+    public DragLayer getDragLayer() {
+        return mDragLayer;
+    }
+
+    public void setDragLayer(DragLayer newValue) {
+        mDragLayer = newValue;
+    }
 
     public void setup(DragLayer layer, DragController controller) {
         mDragLayer = layer;

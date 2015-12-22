@@ -9,9 +9,6 @@ import android.widget.ImageView;
 
 import com.fastaccess.tfl.R;
 
-/**
- * Created by Kosh on 22/11/15 2:29 PM
- */
 public class ForegroundImageView extends ImageView {
     private Drawable foreground;
 

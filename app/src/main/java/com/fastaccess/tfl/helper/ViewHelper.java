@@ -61,6 +61,10 @@ public class ViewHelper {
         });
     }
 
+    public static void animateTranslateY(final int value, @NonNull final View view) {
+        animateTranslateY(value, false, view);
+    }
+
     public static void animateTranslateY(final int value, final boolean revertOnFinish, @NonNull final View view) {
         view.animate().translationY(value).setInterpolator(new AccelerateInterpolator()).setListener(new AnimatorListenerAdapter() {
             @Override

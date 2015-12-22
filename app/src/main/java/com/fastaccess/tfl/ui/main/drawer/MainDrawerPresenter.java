@@ -13,6 +13,7 @@ import com.fastaccess.tfl.apps.AppsAdapter;
 import com.fastaccess.tfl.apps.AppsLoader;
 import com.fastaccess.tfl.apps.AppsModel;
 import com.fastaccess.tfl.helper.AppHelper;
+import com.fastaccess.tfl.helper.Logger;
 import com.fastaccess.tfl.ui.main.MainActivity;
 import com.fastaccess.tfl.ui.widget.drag.DragController;
 import com.fastaccess.tfl.ui.widget.drag.DropSpot;
@@ -82,6 +83,8 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
                 AppHelper.uninstallApp(context, model.getPackageName());
             } else if (v.getId() == R.id.appInfo) {
                 AppHelper.openAppInfo(context, model.getPackageName());
+            } else if (v.getId() == R.id.folderLayout) {
+                mainDrawerModel.onDropOnFolder(model, v.getId());
             }
         }
         mainDrawerModel.onDropZone(false);
@@ -93,6 +96,7 @@ public class MainDrawerPresenter implements LoaderManager.LoaderCallbacks<List<A
     }
 
     @Override public void onEnd() {
+        Logger.e("End");
         mainDrawerModel.onDropZone(false);
     }
 }

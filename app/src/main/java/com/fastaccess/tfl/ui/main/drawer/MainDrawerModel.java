@@ -25,4 +25,6 @@ public interface MainDrawerModel {
     void onDropZone(boolean show);
 
     void onKeyboardHidden();
+
+    void onDropOnFolder(AppsModel model, int folderId);
 }
